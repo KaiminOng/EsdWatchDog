@@ -29,7 +29,7 @@ if (isset($_GET['logout'])) {
 
 $tg_user = getTelegramUserData();
 if ($tg_user !== false) {
-  
+  var_dump($tg_user);
   $first_name = htmlspecialchars($tg_user['first_name']);
   if (isset($tg_user['last_name'])){
     $last_name = htmlspecialchars($tg_user['last_name']);
@@ -54,7 +54,7 @@ if ($tg_user !== false) {
 
   $html = <<<HTML
 <h1>Hello, anonymous!</h1>
-<script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="ESD_Proj_bot" data-size="large"  data-auth-url="check_authorization.php" data-request-access="write"></script>
+<script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="ESD_Proj_bot" data-size="large"  data-auth-url="microservices/authentication/authentication.php" data-request-access="write"></script>
       
 HTML;
 
@@ -69,42 +69,7 @@ HTML;
     <title>Login Widget Example</title>
   </head>
   <body><center>{$html}</center>
-    <script>
-      $('#sendBtn').click(async (event) => {
-          //Prevents screen from refreshing when submitting
-          event.preventDefault();
-
-          // Change serviceURL to your own
-          var serviceURL = "http://localhost:300/send_message/" + {$user_id};
-          
-          try {
-              const response =
-              await fetch(
-                  serviceURL, {
-                  method: 'POST',
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ title: title, price: price, 
-                      availability: availability})
-              });
-
-              const data = await response.json();
-              console.log(data);
-              if (data[1] === 400){
-                  document.getElementById("message").innerHTML = data[0].message
-              }
-              else if(data[1] === 201){
-                  document.getElementById("message").innerHTML = title + " has been succesfully added."
-              }
-
-          } catch (error) {
-              // Errors when calling the service; such as network error, 
-              // service offline, etc
-              showError
-          ('There is a problem adding the book, please try again later.<br />'+error);
-          
-          } // error
-      });
-    </script>
+    
   </body>
 </html>
 HTML;

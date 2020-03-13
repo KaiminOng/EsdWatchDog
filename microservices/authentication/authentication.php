@@ -1,5 +1,4 @@
 <?php
-// session_start();
 
 define('BOT_TOKEN', '1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w'); // place bot token of your bot here
 
@@ -26,7 +25,6 @@ function checkTelegramAuthorization($auth_data) {
 function saveTelegramUserData($auth_data) {
   $auth_data_json = json_encode($auth_data);
   setcookie('tg_user', $auth_data_json);
-  // $_SESSION['tg_user'] = $auth_data_json;
 }
 
 
