@@ -1,10 +1,18 @@
 import os, time, http.client, asyncio
-from termcolor import colored
+import requests
+# from termcolor import colored
 
-SITES = [
-	"www.google.com",
-	"www.facebook.com",	
+sites = [
+	"http://www.google.com",
+	"http://www.facebook.com",	
 ]
+
+def my_funct(site):
+	r = requests.get(site, verify=False, timeout=10)
+	return r.status_code
+
+# for site in sites:
+# 	print(my_funct(site))
 
 # while 1:
 # 	for site in SITES:
@@ -28,7 +36,9 @@ async def count():
     print("Two")
 
 async def main():
-    await asyncio.gather(count(), count(), count())
+	results = await asyncio.gather(map(sites))
+	print(results)
+	
 
 if __name__ == "__main__":
     import time
@@ -36,3 +46,6 @@ if __name__ == "__main__":
     asyncio.run(main())
     elapsed = time.perf_counter() - s
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
+
+# for future in asyncio.as_completed(map(my_funct, sites)):
+#     result = await future
