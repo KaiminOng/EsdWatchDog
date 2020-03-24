@@ -18,7 +18,7 @@ def telegram_bot_sendtext(bot_chatID):
     return response.json()
     
 # if __name__ == '__main__':
-#     app.run(port=300, debug=True)
+#     app.run(port=5000, debug=True)
 
 test = telegram_bot_sendtext("-393119922")
 print(test)
