@@ -54,6 +54,7 @@ Released   : 20130902
 <title>G5T6 Watchdog Application</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
+
 <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
 <!--===============================================================================================-->
 <link rel="stylesheet" type="text/css" href="src/tables/vendor/bootstrap/css/bootstrap.min.css">
@@ -75,8 +76,6 @@ Released   : 20130902
 
 <!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
@@ -94,13 +93,13 @@ crossorigin="anonymous"></script>
 	<div id="header">
 		<div id="logo">
 			<img width="100px"  src="<?=$photo_url?>" alt="" />
-			<h1 style="color:#2980b9"><?=$first_name?></a></h1>
+			<h1 style="color:#6c7ae0"><?=$first_name?></a></h1>
 			<span>Welcome!</span>
 		</div>
 		<div id="menu">
 			<ul>
-				<li><a href="homepage.php" accesskey="1" title="">Homepage</a></li>
-				<li class="current_page_item"><a href="add-endpoint.php" accesskey="2" title="">Add Endpoint</a></li>
+				<li class="current_page_item"><a href="homepage.php" accesskey="1" title="">Homepage</a></li>
+				<li><a href="add-endpoint.php" accesskey="2" title="">Add Endpoint</a></li>
 				<li><a href="logout.php" accesskey="3" title="">Log Out</a></li>
 			</ul>
 		</div>
@@ -111,7 +110,7 @@ crossorigin="anonymous"></script>
 				<h2>G5T6 Watchdog Application</h2>
 				<span class="byline">Monitor your websites with ease</span>
 			</div>
-			<p>Add a <strong>NEW</strong> website to monitor <strong>below</strong>!</p>
+			<p>View your of list websites <strong>below!</strong></p>
 		</div>
 		<div id="featured">
 			<div class="title">
@@ -123,29 +122,30 @@ crossorigin="anonymous"></script>
 			<div class="limiter">
 				<div class="container-table100">
 					<div class="wrap-table100">
-						<div class="table100 ver2 m-b-110">
+						<div class="table100 ver1 m-b-110">
 							<div class="table100-head">
 								<table align="center">
 									<thead>
-										<tr class="row100 head">
-											<th class="cell100 t2column1" style="width:15em">Website</th>
-											<th class="cell100 t2column2" style="width:12em">Chat Group</th>
-											<th class="cell100 t2column3" style="width:8em">Contact Type?</th>
-											<th class="cell100 t2column4" style="width:7em"></th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-
-							<div class="table100-body js-pscroll">
-								<table id="creationtable">
+									<tr class="row100 head">
+										<th class="cell100 t1column1">Index</th>
+										<th class="cell100 t1column2">Website</th>
+										<th class="cell100 t1column3">Linked Chat</th>
+										<th class="cell100 t1column4">Status</th>
+										<th class="cell100 t1column5">Last Updated</th>
+										<th class="cell100 t1column6">Graph</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div class="table100-body js-pscroll">
+								<table id="displaytable">
 									<tbody>
-										<tr class="row100 body">
-											<td class="cell100 t2column1" style="width:15em; text-align:left"><input name="endpoint" style="width:10em" type="text" id="endpoint" placeholder="Input Website URL"></td>
-											<td class="cell100 t2column2" style="width:12em">TO PLACE DROPDOWN LIST OF CHATS</td>
-											<td class="cell100 t2column3" style="width:8em">TYPE???</td>
-											<td class="cell100 t2column4" style="width:7em"><input id='addBtn' class='btn btn-primary' type='submit' value='Add'></td>
-										</tr>
+										<td class="cell100 t1column1">Index</td>
+										<td class="cell100 t1column2">Website</td>
+										<td class="cell100 t1column3">Linked Chat</td>
+										<td class="cell100 t1column4">Status</td>
+										<td class="cell100 t1column5">Last Updated</td>
+										<td class="cell100 t1column6">Graph</td>
 									</tbody>
 								</table>
 							</div>
@@ -160,7 +160,9 @@ crossorigin="anonymous"></script>
 		</div>
 	</div>
 </div>
+
 <script>
+	// Helper function to display error message
 	function showError(message) {
 		// Hide the table and button in the event of error
 		// $('#endpointTable').hide();
@@ -172,42 +174,48 @@ crossorigin="anonymous"></script>
 
 	// anonymous async function 
 	// - using await requires the function that calls it to be async
-	$('#addBtn').click(async (event) => {          
+	$(async() => {           
 
 		var userid = '<?php echo $user_id; ?>';
-
-		var endpoint = $('#endpoint').val();
-		// GET SELECTED CHAT GROUP'S CHAT ID
-		// var chatgroup = $('#chatgroup').val(); ???
-
 		// Change serviceURL to your own
-		var serviceURL = "http://esdwatchdog:5000/endpoint/new";
+		var serviceURL = "http://esdwatchdog:5000/account/" + userid;
 
 		try {
 			const response =
-			await fetch(
-				serviceURL, {
-				method: 'POST',
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ userID: userid, endpoint: endpoint, 
-					chatID: chatid})
-			});
-
+				await fetch(
+				serviceURL, { method: 'GET' }
+			);
 			const data = await response.json();
-			// console.log(data);
-			if (data[1] === 400){
-				document.getElementById("message").innerHTML = data[0].message
-			}
-			else if(data[1] === 201){
-				document.getElementById("message").innerHTML = title + " has been succesfully added."
-			}
+			var status = data.status;
 
+			if (status == 400){
+				showError(data.message);
+			}
+			else {
+				var endpoints = data.result;
+				// for loop to setup all table rows with obtained book data
+				var rows = "";
+				var index = 1;
+				for (const endpoint of endpoints) {
+					eachRow =
+						"<td>" + index + "</td>" +
+						"<td>" + endpoint.url + "</td>" +
+						"<td>" + endpoint.chatname + "</td>" +
+						"<td>" + endpoint.status + "</td>" +
+						"<td>" + endpoint.timestamp + "</td>" +
+						"<td>NOTHING FOR NOW</td>";
+
+					rows += "<tr>" + eachRow + "</tr>";
+				}
+				// add all the rows to the table
+				$('#displayTable tbody').append(rows);
+			}
 		} catch (error) {
 			// Errors when calling the service; such as network error, 
 			// service offline, etc
 			showError
-		('There is a problem adding the endpoint, please try again later.<br />'+error);
-		
+			('There is a problem retrieving data, please try again later.<br />');
+			
 		} // error
 	});
 </script>
