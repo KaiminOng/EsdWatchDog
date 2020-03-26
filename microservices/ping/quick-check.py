@@ -59,6 +59,8 @@ async def main():
 
 	
 
+# await asyncio.sleep(1)
+
 if __name__ == "__main__":
     import time
     s = time.perf_counter()
