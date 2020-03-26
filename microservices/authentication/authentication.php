@@ -41,6 +41,6 @@ try {
 }
 
 // var_dump($_COOKIE);
-header('Location: /webapp/dashboard.php');
+header('Location: /webapp/homepage.php');
 
 ?>
