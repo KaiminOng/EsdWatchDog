@@ -5,7 +5,7 @@
 
 define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
 
-var_dump($_COOKIE);
+// var_dump($_COOKIE);
 
 if (isset($_COOKIE['tg_user'])){
   $user_info = json_decode($_COOKIE['tg_user'], true);
@@ -23,26 +23,10 @@ function getTelegramUserData() {
   return false;
 }
 
-// if(isset($_SESSION['tg_user'])){
-//   $user_info = json_decode($_SESSION['tg_user'], true);
-//   // $user_id = $user_info['id'];
-//   // echo "USER ID:".$user_info['id'];
-//   var_dump($_SESSION['tg_user']);
-// }
-
-// function getTelegramUserData() {
-//   if (isset($_SESSION['tg_user'])) {
-//     $auth_data_json = urldecode($_SESSION['tg_user']);
-//     $auth_data = json_decode($auth_data_json, true);
-//     return $auth_data;
-//   }
-//   return false;
-// }
-
 if (isset($_GET['logout'])) {
-  setcookie('tg_user', '');
+  setcookie('tg_user', '',time() - 3600, '/', 'esdwatchdog.com');
   // session_destroy();
-  header('Location: /');
+  header('Location: webapp/logout.php');
 }
 
 $tg_user = getTelegramUserData();
@@ -68,7 +52,7 @@ if ($tg_user !== false) {
     $html .= "<img src=\"{$photo_url}\">";
   }
 
-  $html .= "<p><a href=\"?logout=1\">Log out</a></p>";
+  $html .= "<p><a href='/'>Log out</a></p>";
 } else {
   $bot_username = BOT_USERNAME;
 
