@@ -178,8 +178,8 @@ th, td {
 }
 
 .t1column1 {
-  width: 10%;
-  padding-left: 40px;
+  width: 5%;
+  padding-left: 20px;
 }
 
 .t1column2 {
@@ -199,7 +199,10 @@ th, td {
 }
 
 .t1column6 {
-  width: 25%;
+  width: 10%;
+}
+.t1column7 {
+  width: 20%;
 }
 
 .t2column1 {
@@ -247,6 +250,7 @@ th, td {
 .table100-body {
   max-height: 585px;
   overflow: auto;
+  font-size: 13px
 }
 
 

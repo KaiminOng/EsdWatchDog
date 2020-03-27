@@ -133,6 +133,7 @@ crossorigin="anonymous"></script>
 										<th class="cell100 t1column4">Status</th>
 										<th class="cell100 t1column5">Last Updated</th>
 										<th class="cell100 t1column6">Graph</th>
+										<th class="cell100 t1column7"></th>
 									</tr>
 								</thead>
 							</table>
@@ -144,8 +145,9 @@ crossorigin="anonymous"></script>
 										<td class="cell100 t1column2">Website</td>
 										<td class="cell100 t1column3">Linked Chat</td>
 										<td class="cell100 t1column4">Status</td>
-										<td class="cell100 t1column5">Last Updated</td>
-										<td class="cell100 t1column6">Graph</td>
+										<td class="cell100 t1column5">4 hours ago</td>
+										<td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
+										<td class="cell100 t1column7"><input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'>  <input id='deleteBtn'  style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'></td>
 									</tbody>
 								</table>
 							</div>
