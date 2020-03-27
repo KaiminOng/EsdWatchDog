@@ -125,11 +125,7 @@ Released   : 20130902
 									<table align="center">
 										<thead>
 											<tr class="row100 head">
-												<th class="cell100 t1column1">Index</th>
 												<th class="cell100 t1column2">Website</th>
-												<th class="cell100 t1column3">Linked Chat</th>
-												<th class="cell100 t1column4">Status</th>
-												<th class="cell100 t1column5">Last Updated</th>
 												<th class="cell100 t1column6">Graph</th>
 												<th class="cell100 t1column7"></th>
 											</tr>
@@ -139,13 +135,11 @@ Released   : 20130902
 								<div class="table100-body js-pscroll">
 									<table id="displaytable">
 										<tbody>
-											<td class="cell100 t1column1">Index</td>
 											<td class="cell100 t1column2">Website</td>
-											<td class="cell100 t1column3">Linked Chat</td>
 											<td class="cell100 t1column4">Status</td>
 											<td class="cell100 t1column5">4 hours ago</td>
-											<td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
-											<td class="cell100 t1column7"><input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'><input id='deleteBtn' style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'>
+											<!-- <td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
+											<td class="cell100 t1column7"><input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'><input id='deleteBtn' style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'> -->
 											</td>
 										</tbody>
 									</table>
@@ -201,10 +195,7 @@ Released   : 20130902
 					var index = 1;
 					for (const endpoint of endpoints) {
 						eachRow =
-							"<td>" + index + "</td>" +
 							"<td>" + endpoint.url + "</td>" +
-							"<td>" + endpoint.chatname + "</td>" +
-							"<td>" + endpoint.status + "</td>" +
 							"<td>" + endpoint.timestamp + "</td>" +
 							"<td>NOTHING FOR NOW</td>";
 
@@ -222,103 +213,6 @@ Released   : 20130902
 			} // error
 		});
 
-		$('#editBtn').click(async (event) => {
-
-			location.href = "edit.php"
-			var userid = '<?php echo $user_id; ?>';
-
-			var endpoint = $('#endpoint').val();
-			// GET SELECTED CHAT GROUP'S CHAT ID
-			// var chatgroup = $('#chatgroup').val(); ???
-
-			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
-
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'POST',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								userID: userid,
-								endpoint: endpoint,
-								chatID: chatid
-							})
-						});
-
-				const data = await response.json();
-				// console.log(data);
-				if (data[1] === 400) {
-					document.getElementById("message").innerHTML = data[0].message
-				} else if (data[1] === 201) {
-					document.getElementById("message").innerHTML = title + " has been succesfully added."
-				}
-
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				showError
-					('There is a problem editing the endpoint, please try again later.<br />' + error);
-
-			} // error
-		});
-
-		$('#deleteBtn').click(function() {
-			var resp = confirm('Are you sure you want to stop monitoring this website?');
-			if (resp == true) {
-				// delete url if press ok
-				location.href = "homepage.php";
-			}
-			else{
-				return false
-			}
-		});
-
-		$('#graphBtn').click(async (event) => {
-			location.href = "graph.php";
-			var userid = '<?php echo $user_id; ?>';
-
-			var endpoint = $('#endpoint').val();
-			// GET SELECTED CHAT GROUP'S CHAT ID
-			// var chatgroup = $('#chatgroup').val(); ???
-
-			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
-
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'POST',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								userID: userid,
-								endpoint: endpoint,
-								chatID: chatid
-							})
-						});
-
-				const data = await response.json();
-				// console.log(data);
-				if (data[1] === 400) {
-					document.getElementById("message").innerHTML = data[0].message
-				} else if (data[1] === 201) {
-					document.getElementById("message").innerHTML = title + " has been succesfully added."
-				}
-
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				showError
-					('There is a problem editing the endpoint, please try again later.<br />' + error);
-
-			} // error
-		});
 	</script>
 </body>
 
