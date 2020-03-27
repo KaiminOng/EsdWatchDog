@@ -115,9 +115,12 @@ crossorigin="anonymous"></script>
 		</div>
 		<div id="featured">
 			<div class="title">
-				<h2>Monitoring</h2>
+				<h3>New Website To Monitor!</h3>
 			</div>
-
+			<p>Note: If you wish to monitor the new website in a <strong>chat group, </strong></p>
+			<p>
+				Do remember to first <strong>add the bot</strong> into the chat group!
+			</p>
 			<p id="main-container"></p>
 			
 			<div class="limiter">
