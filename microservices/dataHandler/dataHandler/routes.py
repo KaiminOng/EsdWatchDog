@@ -34,7 +34,7 @@ def register_account():
 
 
 # Get account endpoints
-@app.route('/watchlist/<string:account_id>', methods=['GET'])
+@app.route('/endpoint/get/<string:account_id>', methods=['GET'])
 def get_endpoints(account_id):
 
     # Get user object
@@ -52,7 +52,7 @@ def get_endpoints(account_id):
 def register_endpoint():
 
     # Specify the required fields to be present in the request
-    required_fields = ['id', 'endpoint', 'chat_id', 'chat_title']
+    required_fields = ['id', 'endpoint', 'chat_id']
 
     try:
         # Performs basic validation on request
@@ -64,7 +64,6 @@ def register_endpoint():
     # Add prerequisite entries to account, endpoint and contact tables
     account = get_or_create(db.session, Account, id=request.json['id'])
     endpoint = get_or_create(db.session, Endpoint, endpoint_url=request.json['endpoint'])
-    contact = get_or_create(db.session, Contact, chat_id=request.json['chat_id'], chat_title=request.json['chat_title'])
 
     # Create a new entry in the associative table
     new_accountEndpoint = accountEndpoint(account_id=request.json['id'], endpoint_url=request.json['endpoint'], chat_id=request.json['chat_id'])
@@ -132,6 +131,7 @@ def get_events():
         'result' : result
     }), 200)
 
+
 # Update status of endpoints
 @app.route('/endpoint/status', methods=['PATCH'])
 def update_endpoint_status():
@@ -151,8 +151,7 @@ def update_endpoint_status():
         except Exception:
             # Go to next record in report if endpoint does not exist
             continue
-        endpoint_row.status = record['status']
-        endpoint_row.last_checked = record['timestamp']
+        endpoint_row.update_status(record['status'], record['timestamp'])
 
     # Update rows in endpoint table
     try:
@@ -178,6 +177,57 @@ def dump_endpoints():
         'result' : result
     }), 200)
     
+
+# Register new chat 
+@app.route('/contact/new', methods=['POST'])
+def register_contact():
+
+    required_fields = ['chat_id', 'chat_title', 'chat_type', 'account_id']
+
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status' : e.status, 'message' :e.message}), e.http_status_code)
+
+    # Create new Contact object
+    new_contact = Contact(chat_id=request.json['chat_id'], chat_title=request.json['chat_title'], chat_type=request.json['chat_type'], chat_owner_id=request.json['account_id'])
+    db.session.add(new_contact)
+
+    # Update rows in contact table
+    try:
+        db.session.commit()
+    except Exception as e:
+        return make_response(jsonify({'status' : 'error', 'message' : 'Error occured when adding new contact'}), 500)
+
+    # Return success response
+    return make_response(jsonify({'status' : 'success'}), 200)
+
+
+# Delete chat 
+@app.route('/contact/remove', methods=['DELETE'])
+def remove_contact():
+
+    required_fields = ['chat_id', 'account_id']
+
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status' : e.status, 'message' :e.message}), e.http_status_code)
+
+    # Get chat_id to delete 
+    contact = Contact.query.filter_by(chat_id=request.json['chat_id'], chat_owner_id=request.json['account_id']).first_or_404(description='Specified contact was not found!')
+
+    # Commit changes
+    try:
+        db.session.delete(contact)
+        db.session.commit()
+    except Exception as e:
+        return make_response(jsonify({'status' : 'error', 'message' : 'Error occured when removing contact'}), 500)
+
+    # Return success response
+    return make_response(jsonify({'status' : 'success'}), 200)
 
 # Edit endpoint 
 
