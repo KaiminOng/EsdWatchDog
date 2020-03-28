@@ -139,14 +139,7 @@ Released   : 20130902
 								<div class="table100-body js-pscroll">
 									<table id="displaytable">
 										<tbody>
-											<td class="cell100 t1column1">Index</td>
-											<td class="cell100 t1column2">Website</td>
-											<td class="cell100 t1column3">Linked Chat</td>
-											<td class="cell100 t1column4">Status</td>
-											<td class="cell100 t1column5">4 hours ago</td>
-											<td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
-											<td class="cell100 t1column7"><input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'><input id='deleteBtn' style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'>
-											</td>
+											
 										</tbody>
 									</table>
 								</div>
@@ -180,35 +173,45 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/account/" + userid;
+			var serviceURL = "http://esdwatchdog:5000/watchlist/get";
 
 			try {
 				const response =
-					await fetch(
-						serviceURL, {
-							method: 'GET'
-						}
-					);
+                await fetch(
+                    serviceURL, {
+                    method: 'GET',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: userid})
+				});
+				
 				const data = await response.json();
 				var status = data.status;
 
-				if (status == 400) {
+				if (status != "success") {
 					showError(data.message);
 				} else {
-					var endpoints = data.result;
+					var result = data.result;
 					// for loop to setup all table rows with obtained book data
 					var rows = "";
 					var index = 1;
-					for (const endpoint of endpoints) {
-						eachRow =
-							"<td>" + index + "</td>" +
-							"<td>" + endpoint.url + "</td>" +
-							"<td>" + endpoint.chatname + "</td>" +
-							"<td>" + endpoint.status + "</td>" +
-							"<td>" + endpoint.timestamp + "</td>" +
-							"<td>NOTHING FOR NOW</td>";
+					for (const r of results) {
+						var eachRow =
+							"<td class='cell100 t1column1'>" + index + "</td>" +
+							"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
+							"<td class='cell100 t1column3'><ol>";
+						for (const c of r.contacts){
+							eachRow += "<li>" + c.chat_title + "</li>";
+						}
+						
+						eachRow += "</ol></td>" +
+							"<td class='cell100 t1column4'>" + r.status + "</td>" +
+							"<td class='cell100 t1column5'>" + r.last_checked + "</td>" +
+							"<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
+							"<td class='cell100 t1column7'><button type='button' class='btn btn-primary' href='update.php?endpoint=" + r.endpoint + "&contacts=" + r.contacts + "'>Update</button>" +
+							"<button id='deleteBtn' type='button' class='btn btn-primary' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
 
 						rows += "<tr>" + eachRow + "</tr>";
+						index += 1;
 					}
 					// add all the rows to the table
 					$('#displayTable tbody').append(rows);
@@ -222,9 +225,9 @@ Released   : 20130902
 			} // error
 		});
 
-		$('#editBtn').click(async (event) => {
+		$('#updateBtn').click(async (event) => {
 
-			location.href = "edit.php"
+			location.href = "update.php"
 			var userid = '<?php echo $user_id; ?>';
 
 			var endpoint = $('#endpoint').val();
@@ -270,10 +273,11 @@ Released   : 20130902
 			var resp = confirm('Are you sure you want to stop monitoring this website?');
 			if (resp == true) {
 				// delete url if press ok
-				location.href = "homepage.php";
+				var dest = $('#deleteBtn').data('dest');
+				$("#deleteBtn").attr("href", dest);
 			}
 			else{
-				return false
+				return false;
 			}
 		});
 
