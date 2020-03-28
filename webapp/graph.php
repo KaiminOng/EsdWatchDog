@@ -83,7 +83,8 @@ Released   : 20130902
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-
+	<script src="../vendor/node_modules/chart.js/Chart.min.js"></script>
+	<script src="../vendor/node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
 </head>
 
 <body>
@@ -127,7 +128,7 @@ Released   : 20130902
 											<tr class="row100 head">
 												<th class="cell100 t1column2">Website</th>
 												<th class="cell100 t1column6">Graph</th>
-												<th class="cell100 t1column7"></th>
+												<th class="cell100 t1column7">Status</th>
 											</tr>
 										</thead>
 									</table>
@@ -136,7 +137,7 @@ Released   : 20130902
 									<table id="displaytable">
 										<tbody>
 											<td class="cell100 t1column2">Website</td>
-											<td class="cell100 t1column4">Status</td>
+											<td class="cell100 t1column4">#</td>
 											<td class="cell100 t1column5">4 hours ago</td>
 											<!-- <td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
 											<td class="cell100 t1column7"><input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'><input id='deleteBtn' style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'> -->

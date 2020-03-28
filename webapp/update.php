@@ -1,39 +1,11 @@
 <?php
 define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
 
-// var_dump($_COOKIE);
-
 if (isset($_COOKIE['tg_user'])) {
-    $user_info = json_decode($_COOKIE['tg_user'], true);
-    // print_r($_COOKIE['tg_user']);
-    $user_id = $user_info['id'];
-    //   echo "USER ID:".$user_info['id'];
-}
-
-function getTelegramUserData()
-{
-    if (isset($_COOKIE['tg_user'])) {
-        $auth_data_json = urldecode($_COOKIE['tg_user']);
-        $auth_data = json_decode($auth_data_json, true);
-        return $auth_data;
-    }
-    return false;
-}
-
-$tg_user = getTelegramUserData();
-if ($tg_user !== false) {
-    // var_dump($tg_user);
-    $first_name = $tg_user['first_name'];
-
-    if (isset($tg_user['last_name'])) {
-        $last_name = " " . $tg_user['last_name'];
-    } else {
-        $last_name = "";
-    }
-
-    if (isset($tg_user['photo_url'])) {
-        $photo_url = $tg_user['photo_url'];
-    }
+	$user_info = json_decode($_COOKIE['tg_user'], true);
+	$user_id = $user_info['id'];
+	$first_name = $user_info['first_name'];
+	$photo_url = $user_info['photo_url'];
 }
 
 if (isset($_GET['endpoint']) && isset($_GET['contacts'])) {
