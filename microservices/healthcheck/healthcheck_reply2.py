@@ -14,7 +14,7 @@ import pika
 # If see errors like "ModuleNotFoundError: No module named 'pika'", need to
 # make sure the 'pip' version used to install 'pika' matches the python version used.
 
-def receiveOrder():
+def receivePing():
     hostname = "localhost" # default broker hostname. Web management interface default at http://localhost:15672
     port = 5672 # default messaging port.
     # connect to the broker and set up a communication channel in the connection
@@ -24,7 +24,7 @@ def receiveOrder():
     channel = connection.channel()
 
     # set up the exchange if the exchange doesn't exist
-    exchangename="healthcheck_ping"
+    exchangename="healthcheck_direct"
     channel.exchange_declare(exchange=exchangename, exchange_type='direct')
 
     replyqueuename="ping.reply"
@@ -39,37 +39,11 @@ def receiveOrder():
 
 def reply_callback(channel, method, properties, body): # required signature for a callback; no return
     """processing function called by the broker when a message is received"""
-    # Load correlations for existing created orders from a file.
-    # - In practice, using DB (as part of the order DB) is a better choice than using a file.
-    rows = []
-    with open("corrids.csv", 'r', newline='') as corrid_file: # 'with' statement in python auto-closes the file when the block of code finishes, even if some exception happens in the middle
-        csvreader = csv.DictReader(corrid_file)
-        for row in csvreader:
-            rows.append(row)
-    # Check if the reply message contains a valid correlation id recorded in the file.
-    # - Assume each line in the file is in this CSV format: <order_id>, <correlation_id>, <status>, ...
-    matched = False
-    for row in rows:
-        if not 'correlation_id' in row:
-            print('Warning for corrids.csv: no "correlation_id" for an order:', row)
-            continue
-        corrid = row['correlation_id']
-        if corrid == properties.correlation_id: # check if the reply message matches one request message based on the correlation id
-            print("--Matched reply message with a correlation ID: " + corrid)
-            # Can do anything needed for the scenario here, e.g., may update the 'status', or inform UI or other applications/services.
-            print(body) # Here, simply print the reply message directly
-            print()
-            matched = True
-            break
-    if not matched:
-        print("--Wrong reply correlation ID: No match of " + properties.correlation_id)
-        print()
-
+    print("Date received by healthcheck_reply2.")
     # acknowledge to the broker that the processing of the message is completed
     channel.basic_ack(delivery_tag=method.delivery_tag)
-
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is " + os.path.basename(__file__) + ": listening for a reply from ping for status codes...")
-    receiveOrder()
+    receivePing()
