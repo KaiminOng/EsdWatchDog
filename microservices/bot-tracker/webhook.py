@@ -16,7 +16,7 @@ def listener():
 
         # Define endpoints
         datahandler_host = "http://localhost:5000"
-        endpoint_index = {'add' : f'{datahandler_host}/contact/new', 'remove': f'{datahandler_host}/contact/remove'}
+        endpoint_index = {'add' : f'{datahandler_host}/account/contact/new', 'remove': f'{datahandler_host}/account/contact/remove'}
 
         # Get chat information
         chat_info = parsed_req['message']['chat']
