@@ -25,7 +25,7 @@ class accountEndpoint(db.Model):
     
     account = db.relationship('Account', backref="watchlist")
     endpoint = db.relationship('Endpoint', backref="watchers")
-    contact = db.relationship('Contact')
+    contact = db.relationship('Contact', uselist=False)
 
 
 class Account(db.Model):
