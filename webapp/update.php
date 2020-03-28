@@ -35,6 +35,11 @@ if ($tg_user !== false) {
         $photo_url = $tg_user['photo_url'];
     }
 }
+
+if (isset($_GET['endpoint']) && isset($_GET['contacts'])) {
+    $endpoint = $_GET['endpoint'];
+    $contacts = $_GET['contacts'];
+}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -125,40 +130,27 @@ Released   : 20130902
                                     <table align="center">
                                         <thead>
                                             <tr class="row100 head">
-                                                <th class="cell100 t1column1">Index</th>
-                                                <th class="cell100 t1column2">Website</th>
-                                                <th class="cell100 t1column3">Linked Chat</th>
-                                                <th class="cell100 t1column4">Status</th>
-                                                <th class="cell100 t1column5">Last Updated</th>
-                                                <th class="cell100 t1column6">Graph</th>
-                                                <th class="cell100 t1column7"></th>
+                                                <th class="cell100 t1column1">Website</th>
+                                                <th class="cell100 t1column2">Chat Group</th>
                                             </tr>
                                         </thead>
                                     </table>
                                 </div>
                                 <div class="table100-body js-pscroll">
-                                    <table id="displaytable">
-                                        <tbody>
-                                            <td class="cell100 t1column1">Index</td>
-                                            <td class="cell100 t1column2">Website</td>
-                                            <td class="cell100 t1column3">Linked Chat</td>
-                                            <td class="cell100 t1column4">Status</td>
-                                            <td class="cell100 t1column5">4 hours ago</td>
-                                            <td class="cell100 t1column6"><input id='graphBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Graph'></td>
-                                            <td class="cell100 t1column7">
-                                                <!-- <input id='editBtn' class='btn btn-primary' style='font-size:12px;' type='button' value='Edit'>  -->
-                                                <input id='deleteBtn' style='font-size:12px;' class='btn btn-primary' type='button' value='Delete'></td>
-                                        </tbody>
-                                    </table>
+                                    <form id='updateEndpoint'>
+                                        <table id="updateTable">
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </form </div> </div> </div> </div> </div> </div> <div id="copyright">
+                                    <span>&copy; Untitled. All rights reserved. | Application By G5T6'2020</span>
+                                    <span>Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="copyright">
-                <span>&copy; Untitled. All rights reserved. | Application By G5T6'2020</span>
-                <span>Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</span>
             </div>
         </div>
     </div>
@@ -177,39 +169,52 @@ Released   : 20130902
         $(async () => {
 
             var userid = '<?php echo $user_id; ?>';
+            var endpoint = '<?php echo $endpoint; ?>';
+            var old_contacts = <?php echo $contacts; ?>;
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5000/account/" + userid;
+            var serviceURL = "http://esdwatchdog:5000/contact/get";
 
             try {
                 const response =
                     await fetch(
                         serviceURL, {
-                            method: 'GET'
-                        }
-                    );
+                            method: 'GET',
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: userid
+                            })
+                        });
+
                 const data = await response.json();
                 var status = data.status;
 
-                if (status == 400) {
+                if (status != "success") {
                     showError(data.message);
                 } else {
-                    var endpoints = data.result;
-                    // for loop to setup all table rows with obtained book data
-                    var rows = "";
-                    var index = 1;
-                    for (const endpoint of endpoints) {
-                        eachRow =
-                            "<td>" + index + "</td>" +
-                            "<td>" + endpoint.url + "</td>" +
-                            "<td>" + endpoint.chatname + "</td>" +
-                            "<td>" + endpoint.status + "</td>" +
-                            "<td>" + endpoint.timestamp + "</td>" +
-                            "<td>NOTHING FOR NOW</td>";
+                    var allcontacts = data.result;
+                    // for loop to setup all table rows with obtained contacts data
+                    var row = "<tr class='row100 body'>" +
+                        "<td class='cell100 t2column1' style='width:15em; text-align:left'>" + endpoint + "</td>" +
+                        "<form id='updateEndpoint'><td class='cell100 t2column2' style='width:12em'>" +
+                        "<select id='chats' name='chats' multiple>";
 
-                        rows += "<tr>" + eachRow + "</tr>";
+                    for (const c of allcontacts) {
+                        if (c.chatid in old_contacts) {
+                            row += "<option value='" + c.chat_id + "' selected>" + c.chat_title + "</option>";
+                        } else {
+                            row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
+                        }
+
                     }
+
+                    row += "</select></td>" +
+                        "<td class='cell100 t2column3' style='width:7em'><input id='updateBtn' class='btn btn-primary' type='submit' value='Add'></td></form></tr>";
+
+
                     // add all the rows to the table
-                    $('#displayTable tbody').append(rows);
+                    $('#updateTable tbody').append(row);
                 }
             } catch (error) {
                 // Errors when calling the service; such as network error, 
@@ -220,55 +225,46 @@ Released   : 20130902
             } // error
         });
 
-        $('#deleteBtn').click(function() {
-            var resp = confirm('Are you sure you want to stop monitoring this website?');
-            if (resp == true) {
-                // delete url if press ok
-                location.href = "edit.php";
-            } else {
-                return false
-            }
-        });
+        $('#updateEndpoint').submit(async (event) => {
 
-        $('#graphBtn').click(async (event) => {
-            location.href = "graph.php";
             var userid = '<?php echo $user_id; ?>';
-
-            var endpoint = $('#endpoint').val();
+            var endpoint = '<?php echo $endpoint; ?>';
+            var old_contacts = <?php echo $contacts; ?>;
             // GET SELECTED CHAT GROUP'S CHAT ID
-            // var chatgroup = $('#chatgroup').val(); ???
+            var new_contacts = $('#chats').val();
 
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
+            var serviceURL = "http://esdwatchdog:5000/watchlist/update";
+
 
             try {
                 const response =
                     await fetch(
                         serviceURL, {
-                            method: 'POST',
+                            method: 'PATCH',
                             headers: {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
                                 userID: userid,
                                 endpoint: endpoint,
-                                chatID: chatid
+                                old_chat_id: old_contacts,
+                                new_chat_id: new_contacts
                             })
                         });
 
                 const data = await response.json();
                 // console.log(data);
-                if (data[1] === 400) {
-                    document.getElementById("message").innerHTML = data[0].message
-                } else if (data[1] === 201) {
-                    document.getElementById("message").innerHTML = title + " has been succesfully added."
+                if (status != "success") {
+                    window.location.replace("homepage.php?error");
+                } else {
+                    window.location.replace("homepage.php?success");
                 }
 
             } catch (error) {
                 // Errors when calling the service; such as network error, 
                 // service offline, etc
-                showError
-                    ('There is a problem editing the endpoint, please try again later.<br />' + error);
+                window.location.replace("homepage.php?error");
 
             } // error
         });
