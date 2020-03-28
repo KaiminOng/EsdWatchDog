@@ -34,9 +34,7 @@ class Account(db.Model):
 
     id = db.Column(db.String(120), primary_key = True)
     username = db.Column(db.String(80), nullable = False, unique=True)
-
-    def __repr__(self):
-        return f"User ID: {self.id} Username: {self.username}"
+    contacts = db.relationship('Contact')
 
 
 class Endpoint(db.Model):
@@ -59,8 +57,10 @@ class Contact(db.Model):
 
     __tablename__ = 'contact'
 
-    chat_id = db.Column(db.Integer, primary_key = True, autoincrement=False)
-    chat_title = db.Column(db.String(120), nullable=False)
+    chat_id = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    chat_owner_id = db.Column(db.String(120), db.ForeignKey("account.id"), primary_key=True)
+    chat_title = db.Column(db.String(120))
+    chat_type = db.Column(db.String(20))
 
 
 class Monitoring(db.Model):
