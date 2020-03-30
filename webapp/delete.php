@@ -19,7 +19,7 @@ else{
             var userid = '<?php echo $user_id; ?>';
             var endpoint = '<?php echo $endpoint; ?>';
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5000/watchlist/remove";
+            var serviceURL = "http://esdwatchdog:5001/watchlist/remove";
 
             try {
                 const response =

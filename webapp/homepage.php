@@ -148,7 +148,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/watchlist/get/" + userid;
+			var serviceURL = "http://esdwatchdog:5001/watchlist/get/" + userid;
 
 			try {
 				const response =
@@ -198,49 +198,49 @@ Released   : 20130902
 			} // error
 		});
 
-		$('#updateBtn').click(async (event) => {
+		// $('#updateBtn').click(async (event) => {
 
-			location.href = "update.php"
-			var userid = '<?php echo $user_id; ?>';
+		// 	location.href = "update.php"
+		// 	var userid = '<?php echo $user_id; ?>';
 
-			var endpoint = $('#endpoint').val();
-			// GET SELECTED CHAT GROUP'S CHAT ID
-			// var chatgroup = $('#chatgroup').val(); ???
+		// 	var endpoint = $('#endpoint').val();
+		// 	// GET SELECTED CHAT GROUP'S CHAT ID
+		// 	// var chatgroup = $('#chatgroup').val(); ???
 
-			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
+		// 	// Change serviceURL to your own
+		// 	var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
 
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'POST',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								userID: userid,
-								endpoint: endpoint,
-								chatID: chatid
-							})
-						});
+		// 	try {
+		// 		const response =
+		// 			await fetch(
+		// 				serviceURL, {
+		// 					method: 'POST',
+		// 					headers: {
+		// 						"Content-Type": "application/json"
+		// 					},
+		// 					body: JSON.stringify({
+		// 						userID: userid,
+		// 						endpoint: endpoint,
+		// 						chatID: chatid
+		// 					})
+		// 				});
 
-				const data = await response.json();
-				// console.log(data);
-				if (data[1] === 400) {
-					document.getElementById("message").innerHTML = data[0].message
-				} else if (data[1] === 201) {
-					document.getElementById("message").innerHTML = title + " has been succesfully added."
-				}
+		// 		const data = await response.json();
+		// 		// console.log(data);
+		// 		if (data[1] === 400) {
+		// 			document.getElementById("message").innerHTML = data[0].message
+		// 		} else if (data[1] === 201) {
+		// 			document.getElementById("message").innerHTML = title + " has been succesfully added."
+		// 		}
 
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				showError
-					('There is a problem editing the endpoint, please try again later.<br />' + error);
+		// 	} catch (error) {
+		// 		// Errors when calling the service; such as network error, 
+		// 		// service offline, etc
+		// 		showError
+		// 			('There is a problem editing the endpoint, please try again later.<br />' + error);
 
-			} // error
-		});
+		// 	} // error
+		// });
 
 		$('#deleteBtn').click(function() {
 			var resp = confirm('Are you sure you want to stop monitoring this website?');
@@ -263,7 +263,7 @@ Released   : 20130902
 			// var chatgroup = $('#chatgroup').val(); ???
 
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
+			var serviceURL = "http://esdwatchdog:5001/endpoint/edit";
 
 			try {
 				const response =

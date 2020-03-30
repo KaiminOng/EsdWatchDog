@@ -143,7 +143,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/contact/get/" + userid;
+			var serviceURL = "http://esdwatchdog:5001/contact/get/" + userid;
 
 			try {
 				const response =
@@ -195,7 +195,7 @@ Released   : 20130902
 			var chats = $('#chats').val();
 
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/watchlist/new";
+			var serviceURL = "http://esdwatchdog:5001/watchlist/new";
 
 
 			try {
