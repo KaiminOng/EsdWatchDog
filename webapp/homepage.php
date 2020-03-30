@@ -148,7 +148,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/watchlist/get/" + userid;
+			var serviceURL = "http://esdwatchdog:5001/watchlist/get/" + userid;
 
 			try {
 				const response =
