@@ -1,5 +1,4 @@
 <?php
-// session_start();
 
 header('Access-Control-Allow-Origin: http://esdwatchdog.com/');
 header('Access-Control-Allow-Credentials: true');
@@ -42,6 +41,6 @@ try {
 }
 
 // var_dump($_COOKIE);
-header('Location: /');
+header('Location: /webapp/homepage.php');
 
 ?>
