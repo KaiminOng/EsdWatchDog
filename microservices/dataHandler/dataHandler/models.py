@@ -19,13 +19,17 @@ class accountEndpoint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.String(120), db.ForeignKey("account.id"), nullable=False)
     endpoint_url = db.Column(db.String(120), db.ForeignKey("endpoint.endpoint_url"), nullable=False)
+    # chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
     chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
 
-    __table_args__ = (db.UniqueConstraint(account_id, endpoint_url, chat_id),)
+
+    __table_args__ = (db.UniqueConstraint(account_id, endpoint_url, chat_id), )
     
     account = db.relationship('Account', backref="watchlist")
     endpoint = db.relationship('Endpoint', backref="watchers")
-    contact = db.relationship('Contact', uselist=False)
+    contact = db.relationship("Contact",
+                    primaryjoin="and_(accountEndpoint.account_id==Contact.chat_owner_id, "
+                        "accountEndpoint.chat_id==Contact.chat_id)")
 
 
 class Account(db.Model):
