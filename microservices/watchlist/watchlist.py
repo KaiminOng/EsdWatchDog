@@ -1,82 +1,100 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from validator import validate_request
+import requests as r
 
+# Start flask app
 app = Flask(__name__)
 
-# Not sure the configurations, Need updates
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/watchlist'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+dataHandler_host = 'http://localhost:5000'
 
-# db = SQLAlchemy(app)
-CORS(app)
+@app.route('/watchlist/get', methods=['GET'])
+def get_account_watchlist():
 
-# class Watchlist(db.Model):
-#     __tablename__ = 'watchlist'
+     # Specify the required fields to be present in the request
+    required_fields = ['id']
 
-#     # Double check with DB
-#     userid = db.Column(db.String(13), primary_key=True)
-#     endpoint = db.Column(db.String(64), nullable=False)
-#     chatid = db.Column(db.String(64), nullable=False)
-    
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
 
-#     def __init__(self, userid, endpoint, chatid):
-#         self.userid = userid
-#         self.endpoint = endpoint
-#         self.chatid = chatid
+    # Formulate request
+    api_route = '/endpoint/get'
 
-#     def json(self):
-#         return {"userid": self.userid, "endpoint": self.endpoint, "chatid": self.chatid}
+    request_data = {'account_id' : request.json['id']}
+    response = r.get(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
 
-# TO GET ALLL USERIDS + ENDPOINTS (Not sure if necessary, but leaving it for now)
-# @app.route("/watchlist")
-# def get_all():
-# 	return jsonify({"lists": [watchlist.json() for watchlist in Watchlist.query.all()]})
+    try:
+        response.raise_for_status()
+    except Exception:
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when retrieving watchlist'}), 500)
 
-@app.route("/watchlist/<string:userid>")
-def find_by_userid(userid):
-    return jsonify({"message": "Find By User('{}') Here".format(userid)},200)
-    # watchlist = Watchlist.query.filter_by(userid=userid).first()
-    # if watchlist:
-    #     return jsonify(watchlist.json())
-    # return jsonify({"message": "Watchlist not found."}, 404)
-    
+    # Successful response
+    return make_response(jsonify(response.json()), 200)
 
 
-@app.route("/watchlist", methods=['POST'])
-def create_endpoint():
 
-    data = request.get_json()
-    userid = data["userid"]
-    chat = data["chat"]
-    endpoint = data["endpoint"]
+@app.route('/watchlist/new', methods=['POST'])
+def add_new_endpoint():
 
-    return jsonify({"message": "CREATE ENDPOINT W '{}', '{}', '{}' HERE".format(userid, chat, endpoint)}, 200)
+    # Specify the required fields to be present in the request
+    required_fields = ['id', 'endpoint', 'chat_id']
 
-    # userid = request.args.get('userid', None)
-    # chat = request.args.get('chat', None)               # In the format of Chat Name 
-    # endpoint = request.args.get('endpoint', None)
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
 
-    # Codes to Get ChatID of Chat that is monitoring the endpoint
-    # ...
-    # chatid = ...
-    # ...
+    # Formulate request
+    api_route = '/endpoint/new'
 
-    # if (Watchlist.query.filter_by(userid=userid, chatid=chatid, endpoint=endpoint).first()):
-    #     return jsonify({"message": "This endpoint already exists in the chat '{}'.".format(chat)}, 400)
+    request_data = {'account_id' : request.json['id'], "endpoint": request.json['endpoint'], "chat_id": request.json['chat_id']}
+    response = r.post(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
 
-    
-    # newEndpoint = Watchlist(userid, endpoint, chatid)
+    try:
+        response.raise_for_status()
+    except Exception:
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when adding new endpoint'}), 500)
 
-    # try:
-    #     db.session.add(newEndpoint)
-    #     db.session.commit()
-    # except:
-    #     return jsonify({"message": "An error occurred creating the endpoint."}, 500)
+    # Successful response
+    return make_response(jsonify({'status': 'success',}), 200)
 
-    # return jsonify(newEndpoint.json(), 201)
-    
+
+
+@app.route('/contact/get', methods=['GET'])
+def get_user_contacts():
+
+    # Specify the required fields to be present in the request
+    required_fields = ['id']
+
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
+
+    # Formulate request
+    api_route = '/account/contact/get'
+
+    request_data = {'account_id' : request.json['id']}
+    try:
+        response = r.get(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
+    except TimeoutError:
+        print("Request to the backend API has timed out")
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when retrieving contacts'}), 500)
+
+    try:
+        response.raise_for_status()
+    except Exception:
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when retrieving contacts'}), 500)
+
+    # Successful response
+    return make_response(jsonify(response.json()), 200)
 
 
 if __name__ == '__main__':
-    app.run(host="esdwatchdog.com", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
