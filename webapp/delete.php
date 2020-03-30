@@ -19,13 +19,13 @@ else{
             var userid = '<?php echo $user_id; ?>';
             var endpoint = '<?php echo $endpoint; ?>';
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5000/watchlist/delete";
+            var serviceURL = "http://esdwatchdog:5000/watchlist/remove";
 
             try {
                 const response =
                 await fetch(
                     serviceURL, {
-                    method: 'DELETE',
+                    method: 'POST',
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id: userid, endpoint: endpoint})
                 });
