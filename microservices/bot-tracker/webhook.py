@@ -8,11 +8,10 @@ def listener():
 
     # Check if incoming request is json
     if request.is_json:
-        
+    
         # Parse request data into json
         parsed_req = request.json
         update_type_index = {'left_chat_participant' : 'remove', 'new_chat_participant' : 'add'}
-        update_type = False
 
         # Define endpoints
         datahandler_host = "http://localhost:5000"
@@ -23,9 +22,13 @@ def listener():
         chat_id = chat_info['id']
         chat_type = chat_info['type']
         chat_title = chat_info.get('title', 'private')
+        chat_text = parsed_req['message']['text']
 
         # Get sender information
         user_id = parsed_req['message']['from']['id']
+
+        # Get update type; Check if /start command initiated by user
+        update_type = 'add' if 'text' in parsed_req['message'] and parsed_req['message']['text'] == '/watchdog' else False
 
         # Get update type and respective endpoint 
         for key, value in update_type_index.items():
