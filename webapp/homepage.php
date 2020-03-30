@@ -2,7 +2,6 @@
 define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
 
 if (isset($_COOKIE['tg_user'])) {
-	var_dump($_COOKIE['tg_user']);
 	$user_info = json_decode($_COOKIE['tg_user'], true);
 	$user_id = $user_info['id'];
 	$first_name = $user_info['first_name'];
@@ -148,7 +147,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5001/watchlist/get/" + userid;
+			var serviceURL = "http://esdwatchdog.com:5001/watchlist/get/" + userid;
 
 			try {
 				const response =
@@ -159,6 +158,7 @@ Released   : 20130902
 				
 				const data = await response.json();
 				var status = data.status;
+				console.log(data)
 
 				if (status != "success") {
 					showError(data.message);
@@ -167,7 +167,7 @@ Released   : 20130902
 					// for loop to setup all table rows with obtained book data
 					var rows = "";
 					var index = 1;
-					for (const r of results) {
+					for (const r of result) {
 						var eachRow =
 							"<td class='cell100 t1column1'>" + index + "</td>" +
 							"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
@@ -175,7 +175,7 @@ Released   : 20130902
 						for (const c of r.contacts){
 							eachRow += "<li>" + c.chat_title + "</li>";
 						}
-						
+
 						eachRow += "</ol></td>" +
 							"<td class='cell100 t1column4'>" + r.status + "</td>" +
 							"<td class='cell100 t1column5'>" + r.last_checked + "</td>" +
@@ -187,7 +187,7 @@ Released   : 20130902
 						index += 1;
 					}
 					// add all the rows to the table
-					$('#displayTable tbody').append(rows);
+					$('#displaytable tbody').append(rows);
 				}
 			} catch (error) {
 				// Errors when calling the service; such as network error, 

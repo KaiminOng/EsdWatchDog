@@ -5,7 +5,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$user_info = json_decode($_COOKIE['tg_user'], true);
 	$user_id = $user_info['id'];
 	$first_name = $user_info['first_name'];
-	$photo_url = $user_info['photo_url'];
+	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
 ?>
 
@@ -63,7 +63,7 @@ Released   : 20130902
 	<div id="page" class="container">
 		<div id="header">
 			<div id="logo">
-				<img width="100px" src="<?= $photo_url ?>" alt="" />
+				<img width="100px" src="<?php echo $photo_url ? $photo_url : 'img/default_icon.png' ?>" alt="" />
 				<h1 style="color:#2980b9"><?= $first_name ?></a></h1>
 				<span>Welcome!</span>
 			</div>
@@ -110,11 +110,13 @@ Released   : 20130902
 								</div>
 
 								<div class="table100-body js-pscroll">
-									<table id="creationtable">
-										<tbody>
+									<form id='addEndpoint'>
+										<table id="creationtable">
+											<tbody>
 
-										</tbody>
-									</table>
+											</tbody>
+										</table>
+									</form>
 								</div>
 							</div>
 						</div>
@@ -143,7 +145,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5001/contact/get/" + userid;
+			var serviceURL = "http://esdwatchdog.com:5001/contact/get/" + userid;
 
 			try {
 				const response =
@@ -162,7 +164,7 @@ Released   : 20130902
 					// for loop to setup all table rows with obtained contacts data
 					var row = "<tr class='row100 body'>" +
 						"<td class='cell100 t2column1' style='width:15em; text-align:left'><input name='endpoint' style='width:10em' type='text' id='endpoint' placeholder='Input Website URL'></td>" +
-						"<form id='addEndpoint'><td class='cell100 t2column2' style='width:12em'>" +
+						"<td class='cell100 t2column2' style='width:12em'>" +
 						"<select id='chats' name='chats' multiple>";
 
 					for (const c of contacts) {
@@ -170,11 +172,11 @@ Released   : 20130902
 					}
 
 					row += "</select></td>" +
-						"<td class='cell100 t2column3' style='width:7em'><input id='addBtn' class='btn btn-primary' type='submit' value='Add'></td></form></tr>";
+						"<td class='cell100 t2column3' style='width:7em'><input id='addBtn' class='btn btn-primary' type='submit' value='Add'></td></tr>";
 
 
 					// add all the rows to the table
-					$('#creationTable tbody').append(row);
+					$('#creationtable tbody').append(row);
 				}
 			} catch (error) {
 				// Errors when calling the service; such as network error, 
@@ -183,50 +185,54 @@ Released   : 20130902
 					('There is a problem retrieving data, please try again later.<br />');
 
 			} // error
-		});
-
-		// - using await requires the function that calls it to be async
-		$('#addEndpoint').submit(async (event) => {
-
-			var userid = '<?php echo $user_id; ?>';
-
-			var endpoint = $('#endpoint').val();
-			// GET SELECTED CHAT GROUP'S CHAT ID
-			var chats = $('#chats').val();
-
-			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5001/watchlist/new";
 
 
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'POST',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								userID: userid,
-								endpoint: endpoint,
-								chat_id: chats
-							})
-						});
+			$('#addEndpoint')[0].addEventListener("submit", async (event) => {
+				
+				event.preventDefault();
 
-				const data = await response.json();
-				// console.log(data);
-				if (status != "success") {
+				var userid = '<?php echo $user_id; ?>';
+
+				var endpoint = $('#endpoint').val();
+				// GET SELECTED CHAT GROUP'S CHAT ID
+				var chats = $('#chats').val();
+
+				// Change serviceURL to your own
+				var serviceURL = "http://esdwatchdog.com:5000/endpoint/new";
+
+
+				try {
+					const response =
+						await fetch(
+							serviceURL, {
+								method: 'POST',
+								headers: {
+									"Content-Type": "application/json"
+								},
+								body: JSON.stringify({
+									account_id: userid,
+									endpoint: endpoint,
+									chat_id: chats
+								})
+							});
+
+					const data = await response.json();
+					// console.log(data);
+					if (status != "success") {
+						window.location.replace("homepage.php?error");
+					} else {
+						window.location.replace("homepage.php?success");
+					}
+
+				} catch (error) {
+					// Errors when calling the service; such as network error, 
+					// service offline, etc
 					window.location.replace("homepage.php?error");
-				} else {
-					window.location.replace("homepage.php?success");
-				}
 
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				window.location.replace("homepage.php?error");
+				} // error
 
-			} // error
+			});
+			return false;
 		});
 	</script>
 </body>
