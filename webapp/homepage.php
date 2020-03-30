@@ -2,6 +2,7 @@
 define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
 
 if (isset($_COOKIE['tg_user'])) {
+	var_dump($_COOKIE['tg_user']);
 	$user_info = json_decode($_COOKIE['tg_user'], true);
 	$user_id = $user_info['id'];
 	$first_name = $user_info['first_name'];
@@ -147,15 +148,13 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/watchlist/get";
+			var serviceURL = "http://esdwatchdog:5000/watchlist/get/" + userid;
 
 			try {
 				const response =
                 await fetch(
                     serviceURL, {
                     method: 'GET',
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: userid})
 				});
 				
 				const data = await response.json();

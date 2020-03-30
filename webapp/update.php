@@ -144,19 +144,13 @@ Released   : 20130902
             var endpoint = '<?php echo $endpoint; ?>';
             var old_contacts = <?php echo $contacts; ?>;
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5000/contact/get";
+            var serviceURL = "http://esdwatchdog:5000/contact/get/" + userid;
 
             try {
                 const response =
                     await fetch(
                         serviceURL, {
-                            method: 'GET',
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                id: userid
-                            })
+                        method: 'GET',
                         });
 
                 const data = await response.json();
@@ -178,7 +172,6 @@ Released   : 20130902
                         } else {
                             row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
                         }
-
                     }
 
                     row += "</select></td>" +

@@ -143,19 +143,13 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/contact/get";
+			var serviceURL = "http://esdwatchdog:5000/contact/get/" + userid;
 
 			try {
 				const response =
 					await fetch(
 						serviceURL, {
 							method: 'GET',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								id: userid
-							})
 						});
 
 				const data = await response.json();
