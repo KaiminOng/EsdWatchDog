@@ -92,13 +92,13 @@ def register_endpoint():
     endpoint = get_or_create(db.session, Endpoint,
                              endpoint_url=request.json['endpoint'])
 
-    # Create a new entry in the associative table
-    new_accountEndpoint = accountEndpoint(
-        account_id=request.json['account_id'], endpoint_url=request.json['endpoint'], chat_id=request.json['chat_id'])
+    for contact in request.json['chat_id']:
+        # Create a new entry in the associative table
+        new_accountEndpoint = accountEndpoint(account_id=request.json['account_id'], endpoint_url=request.json['endpoint'], chat_id=contact)
+        db.session.add(new_accountEndpoint)
 
     try:
         # Add and commit the changes
-        db.session.add(new_accountEndpoint)
         db.session.commit()
     except Exception as e:
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when registering an endpoint'}), 500)
