@@ -6,6 +6,7 @@ import requests as r
 
 # Start flask app
 app = Flask(__name__)
+CORS(app)
 
 dataHandler_host = 'http://localhost:5000'
 
@@ -43,8 +44,9 @@ def add_new_endpoint():
     # Formulate request
     api_route = '/endpoint/new'
 
-    request_data = {'account_id' : request.json['id'], "endpoint": request.json['endpoint'], "chat_id": request.json['chat_id']}
-    response = r.post(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
+    for contact in request.json['chat_id']:
+        request_data = {'account_id' : request.json['id'], "endpoint": request.json['endpoint'], "chat_id": contact}
+        response = r.post(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
 
     try:
         response.raise_for_status()
@@ -110,4 +112,4 @@ def remove_account_watchlist():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="esdwatchdog.com", port=5001, debug=True)
