@@ -9,22 +9,13 @@ app = Flask(__name__)
 
 dataHandler_host = 'http://localhost:5000'
 
-@app.route('/watchlist/get', methods=['GET'])
-def get_account_watchlist():
-
-     # Specify the required fields to be present in the request
-    required_fields = ['id']
-
-    try:
-        # Performs basic validation on request
-        validate_request(request, required_fields)
-    except Exception as e:
-        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
+@app.route('/watchlist/get/<string:account_id>', methods=['GET'])
+def get_account_watchlist(account_id):
 
     # Formulate request
     api_route = '/endpoint/get'
 
-    request_data = {'account_id' : request.json['id']}
+    request_data = {'account_id' : account_id}
     response = r.get(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
 
     try:
@@ -65,22 +56,13 @@ def add_new_endpoint():
 
 
 
-@app.route('/contact/get', methods=['GET'])
-def get_user_contacts():
-
-    # Specify the required fields to be present in the request
-    required_fields = ['id']
-
-    try:
-        # Performs basic validation on request
-        validate_request(request, required_fields)
-    except Exception as e:
-        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
+@app.route('/contact/get/<string:account_id>', methods=['GET'])
+def get_user_contacts(account_id):
 
     # Formulate request
     api_route = '/account/contact/get'
+    request_data = {'account_id' : account_id}
 
-    request_data = {'account_id' : request.json['id']}
     try:
         response = r.get(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
     except TimeoutError:
@@ -94,6 +76,37 @@ def get_user_contacts():
 
     # Successful response
     return make_response(jsonify(response.json()), 200)
+
+
+
+@app.route('/watchlist/remove', methods=['POST'])
+def remove_account_watchlist():
+
+    required_fields = ['id', 'endpoint']
+    api_route = '/endpoint/remove'
+
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
+
+    request_data = {'account_id': request.json['id'], 'endpoint': request.json['endpoint']}
+
+    try:
+        response = r.delete(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
+    except TimeoutError:
+        print("Request to the backend API has timed out")
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when retrieving contacts'}), 500)
+
+    try:
+        response.raise_for_status()
+    except Exception:
+        return make_response(jsonify({'status': 'error', 'message': 'Error occured when retrieving contacts'}), 500)
+
+    # Successful response
+    return make_response(jsonify({'status': 'success',}), 200)
+
 
 
 if __name__ == '__main__':
