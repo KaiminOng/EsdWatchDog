@@ -5,7 +5,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$user_info = json_decode($_COOKIE['tg_user'], true);
 	$user_id = $user_info['id'];
 	$first_name = $user_info['first_name'];
-	$photo_url = $user_info['photo_url'];
+	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
 
 
@@ -64,7 +64,7 @@ Released   : 20130902
 	<div id="page" class="container">
 		<div id="header">
 			<div id="logo">
-				<img width="100px" src="<?= $photo_url ?>" alt="" />
+				<img width="100px" src="<?php echo $photo_url ? $photo_url : 'img/default_icon.png' ?>" alt="" />
 				<h1 style="color:#6c7ae0"><?= $first_name ?></a></h1>
 				<span>Welcome!</span>
 			</div>
@@ -147,7 +147,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/watchlist/get";
+			var serviceURL = "http://localhost:5001/watchlist/get";
 
 			try {
 				const response =
@@ -193,6 +193,7 @@ Released   : 20130902
 			} catch (error) {
 				// Errors when calling the service; such as network error, 
 				// service offline, etc
+				console.log(error)
 				showError
 					('There is a problem retrieving data, please try again later.<br />');
 
@@ -209,7 +210,7 @@ Released   : 20130902
 			// var chatgroup = $('#chatgroup').val(); ???
 
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
+			var serviceURL = "http://esdwatchdog:5001/endpoint/edit";
 
 			try {
 				const response =
@@ -264,7 +265,7 @@ Released   : 20130902
 			// var chatgroup = $('#chatgroup').val(); ???
 
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
+			var serviceURL = "http://esdwatchdog:5001/endpoint/edit";
 
 			try {
 				const response =
