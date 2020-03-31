@@ -355,3 +355,32 @@ def get_account_contacts():
         'status': 'success',
         'result': results
     }), 200)
+
+
+# Get all contacts for each endpoint
+@app.route('/endpoint/contact/get', methods=['GET'])
+def get_endpoint_contacts():
+
+    required_fields = ['endpoint']
+
+    results = []
+
+    try:
+        # Performs basic validation on request
+        validate_request(request, required_fields)
+    except Exception as e:
+        return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
+
+    for endpoint in request.json['endpoint']:
+        target_chat = []
+        associated = accountEndpoint.query.filter_by(endpoint_url=endpoint).all()
+        for row in associated:
+            if row.chat_id not in target_chat:
+                target_chat.append(row.chat_id)
+        results.append({'endpoint': endpoint, 'chat_id': target_chat})
+        
+
+    return make_response(jsonify({
+        'status': 'success',
+        'result': results
+    }), 200)
