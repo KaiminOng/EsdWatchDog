@@ -8,6 +8,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
 
+$hostname = "http://esdwatchdog.com";
 
 ?>
 
@@ -91,12 +92,28 @@ Released   : 20130902
 
 				<p id="main-container"></p>
 
+				<?php 
+				if(isset($_GET['status'])){
+					$status = $_GET['status'];
+					$message = $_GET['message'];
+
+					if ($status === 'success'){
+						echo "<ul class='list-group text-center font-weight-bold'>
+						<li class='list-group-item list-group-item-success'>{$message}</li>
+						</ul>";
+					} else{
+						echo "<ul class='list-group text-center font-weight-bold'>
+						<li class='list-group-item list-group-item-danger'>{$message}</li>
+						</ul>";
+					}
+				}
+				?>
 				<div class="limiter">
 					<div class="container-table100">
 						<div class="wrap-table100">
 							<div class="table100 ver1 m-b-110">
 								<div class="table100-head">
-									<table align="center">
+									<table>
 										<thead>
 											<tr class="row100 head">
 												<th class="cell100 t1column1">Index</th>
@@ -104,7 +121,7 @@ Released   : 20130902
 												<th class="cell100 t1column3">Linked Chat</th>
 												<th class="cell100 t1column4">Status</th>
 												<th class="cell100 t1column5">Last Updated</th>
-												<th class="cell100 t1column6">Graph</th>
+												<!-- <th class="cell100 t1column6">Graph</th> -->
 												<th class="cell100 t1column7"></th>
 											</tr>
 										</thead>
@@ -141,13 +158,18 @@ Released   : 20130902
 				.append("<label>" + message + "</label>");
 		}
 
+		
+		
+
 		// anonymous async function 
 		// - using await requires the function that calls it to be async
-		$(async () => {
-
+		setTimeout((async () => {
+			window.history.replaceState({}, document.title, "/webapp/homepage.php");
 			var userid = '<?php echo $user_id; ?>';
+			var hostname = '<?php echo $hostname; ?>';
+			// var dict = {};
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog.com:5001/watchlist/get/" + userid;
+			var serviceURL = hostname + ":5001/watchlist/get/" + userid;
 
 			try {
 				const response =
@@ -167,27 +189,51 @@ Released   : 20130902
 					// for loop to setup all table rows with obtained book data
 					var rows = "";
 					var index = 1;
-					for (const r of result) {
+					for (var r of result) {
 						var eachRow =
 							"<td class='cell100 t1column1'>" + index + "</td>" +
 							"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
 							"<td class='cell100 t1column3'><ol>";
-						for (const c of r.contacts){
+						for (var c of r.contacts){
 							eachRow += "<li>" + c.chat_title + "</li>";
 						}
+						
+						if (r.status === 'Healthy') {
+                            var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
+                        } else if (r.status === 'Unhealthy') {
+                            var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
+                        } else{
+							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
+						}
+						
+						var last_checked = '09/09/2019';
+						if (last_checked === null){
+							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
+						} else{
+							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + last_checked + "</button>";
+						}
+						
 
 						eachRow += "</ol></td>" +
-							"<td class='cell100 t1column4'>" + r.status + "</td>" +
-							"<td class='cell100 t1column5'>" + r.last_checked + "</td>" +
-							"<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
-							"<td class='cell100 t1column7'><button type='button' class='btn btn-primary' href='update.php?endpoint=" + r.endpoint + "&contacts=" + r.contacts + "'>Update</button>" +
-							"<button id='deleteBtn' type='button' class='btn btn-primary' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
+							"<td class='cell100 t1column4'>" + health + "</td>" +
+							"<td class='cell100 t1column5'>" + timestamp + "</td>" +
+							// "<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
+							"<td class='cell100 t1column7'>" + 
+							// "<button class='btn btn-primary' style='font-size:10px' id='updateBtn' >Update</button>" +
+							// "<form method='GET' action='update.php'>" + "<input type='hidden' name='endpoint' value=" + r.endpoint + ">" +
+							// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
+							"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
+							
+							"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
 
 						rows += "<tr>" + eachRow + "</tr>";
 						index += 1;
+						// dict[r.endpoint] = r.contacts;
 					}
 					// add all the rows to the table
 					$('#displaytable tbody').append(rows);
+					// '<%session_start(); %>';
+					// '<%Session["endpoint_contacts"] = "' + dict + '"; %>';
 				}
 			} catch (error) {
 				// Errors when calling the service; such as network error, 
@@ -197,7 +243,14 @@ Released   : 20130902
 					('There is a problem retrieving data, please try again later.<br />');
 
 			} // error
-		});
+		}) , 5000);
+
+		
+
+		// function updateURL(endpoint){
+		// 	"<%Session['endpoint'] = " + endpoint + "; %>";
+		// 	window.location.replace("update.php");
+		// }
 
 		// $('#updateBtn').click(async (event) => {
 

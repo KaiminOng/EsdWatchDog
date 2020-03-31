@@ -7,6 +7,8 @@ if (isset($_COOKIE['tg_user'])) {
 	$first_name = $user_info['first_name'];
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
+
+$hostname = "http://esdwatchdog.com";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -91,6 +93,7 @@ Released   : 20130902
 				<p>
 					Do remember to first <strong>add the bot</strong> into the chat group!
 				</p>
+				<p>*Selection of <strong>multiple chats</strong> is possible</p>
 				<p id="main-container"></p>
 
 				<div class="limiter">
@@ -103,7 +106,7 @@ Released   : 20130902
 											<tr class="row100 head">
 												<th class="cell100 t2column1" style="width:15em">Website</th>
 												<th class="cell100 t2column2" style="width:12em">Chat Group</th>
-												<th class="cell100 t2column43" style="width:7em"></th>
+												<th class="cell100 t2column3" style="width:7em"></th>
 											</tr>
 										</thead>
 									</table>
@@ -142,10 +145,11 @@ Released   : 20130902
 		// anonymous async function 
 
 		$(async () => {
+			var hostname = '<?php echo $hostname; ?>';
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog.com:5001/contact/get/" + userid;
+			var serviceURL = hostname + ":5001/contact/get/" + userid;
 
 			try {
 				const response =
@@ -163,16 +167,17 @@ Released   : 20130902
 					var contacts = data.result;
 					// for loop to setup all table rows with obtained contacts data
 					var row = "<tr class='row100 body'>" +
-						"<td class='cell100 t2column1' style='width:15em; text-align:left'><input name='endpoint' style='width:10em' type='text' id='endpoint' placeholder='Input Website URL'></td>" +
-						"<td class='cell100 t2column2' style='width:12em'>" +
-						"<select id='chats' name='chats' multiple>";
+						"<td class='cell100 t2column1' align:left'>" +
+							"<input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>" + 
+						"<td class='cell100 t2column2'>" + 
+						"<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
 
 					for (const c of contacts) {
 						row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
 					}
 
 					row += "</select></td>" +
-						"<td class='cell100 t2column3' style='width:7em'><input id='addBtn' class='btn btn-primary' type='submit' value='Add'></td></tr>";
+						"<td class='cell100 t2column3'><input id='addBtn' class='btn btn-primary' type='submit' style='font-size:13px' value='Add'></td></tr>";
 
 
 					// add all the rows to the table
@@ -190,7 +195,7 @@ Released   : 20130902
 			$('#addEndpoint')[0].addEventListener("submit", async (event) => {
 				
 				event.preventDefault();
-
+				
 				var userid = '<?php echo $user_id; ?>';
 
 				var endpoint = $('#endpoint').val();
@@ -198,7 +203,7 @@ Released   : 20130902
 				var chats = $('#chats').val();
 
 				// Change serviceURL to your own
-				var serviceURL = "http://esdwatchdog.com:5000/endpoint/new";
+				var serviceURL = hostname + ":5000/endpoint/new";
 
 
 				try {
@@ -219,15 +224,18 @@ Released   : 20130902
 					const data = await response.json();
 					// console.log(data);
 					if (status != "success") {
-						window.location.replace("homepage.php?error");
+						var message = "Error in input, please try again.";
+						window.location.replace("homepage.php?status=error&message=" + message);
 					} else {
-						window.location.replace("homepage.php?success");
+						var message = "Endpoint successfully added."
+						window.location.replace("homepage.php?status=success&message=" + message);
 					}
 
 				} catch (error) {
 					// Errors when calling the service; such as network error, 
 					// service offline, etc
-					window.location.replace("homepage.php?error");
+					var message = "Error connecting to the service, please try again later.";
+					window.location.replace("homepage.php?status=error&message=" + message);
 
 				} // error
 
