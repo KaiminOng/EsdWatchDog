@@ -3,12 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from validator import validate_request
 import requests as r
+import os
 
 # Start flask app
 app = Flask(__name__)
 CORS(app)
 
-dataHandler_host = 'http://localhost:5000'
+os.environ['DH_URI'] = 'http://esdwatchdog:5000'
+dataHandler_host = os.environ.get('DH_URI')
 
 @app.route('/watchlist/get/<string:account_id>', methods=['GET'])
 def get_account_watchlist(account_id):
@@ -112,4 +114,5 @@ def remove_account_watchlist():
 
 
 if __name__ == '__main__':
+    print("Watchlist service is running...")
     app.run(host="esdwatchdog.com", port=5001, debug=True)
