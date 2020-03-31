@@ -18,9 +18,10 @@ import random
 import pika
 
 hostname = "localhost" # default hostname
-port = 5672 # default port
+port = 5672 # default port`
+
 # connect to the broker and set up a communication channel in the connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, virtual_host='watchdog'))
     # Note: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
     # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls
 channel = connection.channel()
@@ -43,20 +44,21 @@ async def main(urls):
     The session contains a cookie storage and connection pool, 
     thus cookies and connections are shared between HTTP requests sent by the same session.
     '''
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5), raise_for_status=True) as session:
         for url in urls:
             info = {}
             info["endpoint"] = str(url)
             # Able to connect to url
             try:
                 async with session.get(url) as resp:
-                    # If status code shows 200
-                    if resp.status == 200:
+                    # If no error status code
+                    if not resp.status >= 400:
                         # results.append(True)
                         info["status"] = "healthy"
             # Unable to connect to url
-            except Exception:
+            except Exception as e:
                 # results.append(False)
+                print(type(e))
                 info["status"] = "unhealthy"
             
             #add timestamp
@@ -79,33 +81,35 @@ def receiveHealthcheck():
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("Received a request by " + __file__)
     result = processRequest(json.loads(body))
-    json.dump(result, sys.stdout, default=str) # convert the JSON object to a string and print out on screen
-    print() # print a new line feed to the previous json dump
-    print() # print another new line as a separator
+    
+    # json.dump(result, sys.stdout, default=str) # convert the JSON object to a string and print out on screen
+    print('\n\n') # print a new line feed to the previous json dump
 
     # prepare the reply message and send it out
     replymessage = json.dumps(result, default=str) # convert the JSON object to a string
-    replyqueuename="ping.reply"
+    replyqueuename=properties.reply_to
     # A general note about AMQP queues: If a queue or an exchange doesn't exist before a message is sent,
     # - the broker by default silently drops the message;
     # - So, if really need a 'durable' message that can survive broker restarts, need to
     #  + declare the exchange before sending a message, and
     #  + declare the 'durable' queue and bind it to the exchange before sending a message, and
     #  + send the message with a persistent mode (delivery_mode=2).
-    channel.queue_declare(queue=replyqueuename, durable=True) # make sure the queue used for "reply_to" is durable for reply messages
+    channel.queue_declare(queue=properties.reply_to, durable=True) # make sure the queue used for "reply_to" is durable for reply messages
     channel.queue_bind(exchange=exchangename, queue=replyqueuename, routing_key=replyqueuename) # make sure the reply_to queue is bound to the exchange
     # send msg
     channel.basic_publish(exchange=exchangename,
-            routing_key=properties.reply_to, # use the reply queue set in the request message as the routing key for reply messages
+            routing_key=replyqueuename, # use the reply queue set in the request message as the routing key for reply messages
             body=replymessage, 
             properties=pika.BasicProperties(delivery_mode = 2, # make message persistent (stored to disk, not just memory) within the matching queues; default is 1 (only store in memory)
                 # correlation_id = properties.correlation_id, # use the correlation id set in the request message
+                content_type='application/json'
             )
     )
+    print('Response sent to reply queue!')
     channel.basic_ack(delivery_tag=method.delivery_tag) # acknowledge to the broker that the processing of the request message is completed
 
 def processRequest(healthcheck):
-    print("Ping healthcheck...")
+    print("Processing ping request...")
     urls = healthcheck['urls']
 
     s = time.perf_counter()
@@ -125,5 +129,5 @@ def send_error(resultmessage):
     )
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')
-    print("This is " + os.path.basename(__file__) + ": receive healthcheck request")
+    print("This is " + os.path.basename(__file__) + ": Listening for healthcheck request...")
     receiveHealthcheck()
