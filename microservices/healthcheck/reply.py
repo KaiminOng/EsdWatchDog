@@ -13,12 +13,7 @@ dh_uri = os.environ.get('DH_URI')
 
 
 # Initiate connection to message broker
-<<<<<<< HEAD
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', heartbeat=0))
-=======
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
->>>>>>> 9e729faa676a8cb1c64e875677a81492dbc9f4be
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_hostname, port=broker_port, heartbeat=0, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
 
 try:
     channel = connection.channel()

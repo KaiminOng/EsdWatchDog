@@ -21,11 +21,7 @@ hostname = os.environ.get('BROKER_HOSTNAME') # default hostname
 port = os.environ.get('BROKER_PORT')
 
 # connect to the broker and set up a communication channel in the connection
-<<<<<<< HEAD
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, virtual_host='watchdog', heartbeat=0))
-=======
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
->>>>>>> 9e729faa676a8cb1c64e875677a81492dbc9f4be
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, heartbeat=0, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
     # Note: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
     # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls
 channel = connection.channel()
