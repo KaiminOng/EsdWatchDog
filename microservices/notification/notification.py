@@ -5,20 +5,7 @@ from flask_cors import CORS
 import json
 import pika
 import os
-
-app = Flask(__name__)
-
-@app.route("/send_message/<bot_chatID>", methods=['POST'])
-def telegram_bot_sendtext(bot_chatID):
-    
-    bot_token = '1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w'
-    # bot_chatID = '-1001260714304'
-    bot_message = "TESTING EH"
-    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
-
-    response = r.get(send_text)
-
-    return response.json()
+from datetime import datetime
 
 # Set environment variables ; will be stored in .env file
 os.environ['BROKER_HOSTNAME'] = 'localhost'
@@ -54,17 +41,51 @@ def receiveRequest():
     notificaitonqueue = channel.queue_declare(queue=queue_name, durable=True)
     channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key='healthcheck.notify')
 
-def processReport(channel, method, properties, body):
+    # Configure queue and begin event loop for consuming messages
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue=queue_name, on_message_callback=processRequest)
+    channel.start_consuming()
+
+def processRequest(channel, method, properties, body):
 
     print("Received a request from healthcheck...")
 
     request = json.loads(body)
-    print(request)
+    return request
+
+def telegram_bot_sendtext(chat_id, message):
+    
+    bot_token = '1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w'
+    # bot_chatID = '-1001260714304'
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + chat_id + '&parse_mode=Markdown&text=' + message
+
+    response = r.get(send_text)
+
+    return response.json()
+
+def sendMessage(data):
+    events = data['events']
+    for event in events:
+        endpoint = event['endpoint']
+        chat_ids = event['chat_id']
+        timestamp = event['timestamp']
+        dt = datetime.fromtimestamp(timestamp)          # dt = 2018-12-25 09:27:53 (format)
+        status = event['status']
+        if status == 'unhealthy':
+            message = "Hey! Your endpoint <" + endpoint + "> has been DOWN since " + str(dt) + "!"
+        else:
+             message = "Hey! Your endpoint <" + endpoint + "> has been UP since " + str(dt) + "!"
+
+        for chat in chat_ids:
+            response = telegram_bot_sendtext(chat, message)
+        print(response)
 
 
+if __name__ == '__main__':
+    receiveRequest()
+    data = processRequest()
+    sendMessage(data)
 
-# if __name__ == '__main__':
-#     app.run(port=5000, debug=True)
 
-test = telegram_bot_sendtext("-393119922")
-print(test)
+# test = telegram_bot_sendtext("-393119922")
+# print(test)
