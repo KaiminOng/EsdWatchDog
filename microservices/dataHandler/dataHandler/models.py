@@ -12,26 +12,6 @@ from . import db
 #     db.Column('chat_id', db.String(120), db.ForeignKey('contact.chat_id'), primary_key = True)
 # )
 
-class accountEndpoint(db.Model):
-
-    __tablename__ = 'accountEndpoint'
-
-    id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.String(120), db.ForeignKey("account.id"), nullable=False)
-    endpoint_url = db.Column(db.String(120), db.ForeignKey("endpoint.endpoint_url"), nullable=False)
-    # chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
-    chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
-
-
-    __table_args__ = (db.UniqueConstraint(account_id, endpoint_url, chat_id), )
-    
-    account = db.relationship('Account', backref="watchlist")
-    endpoint = db.relationship('Endpoint', backref="watchers")
-    contact = db.relationship("Contact",
-                    primaryjoin="and_(accountEndpoint.account_id==Contact.chat_owner_id, "
-                        "accountEndpoint.chat_id==Contact.chat_id)")
-
-
 class Account(db.Model):
 
     __tablename__ = 'account'
@@ -79,4 +59,23 @@ class Monitoring(db.Model):
 
 
     __table_args__ = (db.UniqueConstraint(endpoint_url, timestamp),)
+
+
+class accountEndpoint(db.Model):
+
+    __tablename__ = 'accountEndpoint'
+
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.String(120), db.ForeignKey("account.id"), nullable=False)
+    endpoint_url = db.Column(db.String(120), db.ForeignKey("endpoint.endpoint_url"), nullable=False)
+    # chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
+    chat_id = db.Column(db.Integer, nullable=False)
+
+    __table_args__ = (db.UniqueConstraint(account_id, endpoint_url, chat_id), )
+    
+    account = db.relationship('Account', backref="watchlist")
+    endpoint = db.relationship('Endpoint', backref="watchers")
+    contact = db.relationship("Contact",
+                    primaryjoin="and_(foreign(accountEndpoint.account_id) == remote(Contact.chat_owner_id), "
+                        "foreign(accountEndpoint.chat_id) == remote(Contact.chat_id))")
 
