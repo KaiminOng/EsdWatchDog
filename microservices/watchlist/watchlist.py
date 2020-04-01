@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-os.environ['DH_URI'] = 'http://esdwatchdog:5000'
+os.environ['DH_URI'] = 'http://esdwatchdog.com:5000'
 dataHandler_host = os.environ.get('DH_URI')
 
 @app.route('/watchlist/get/<string:account_id>', methods=['GET'])
