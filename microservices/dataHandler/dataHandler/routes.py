@@ -262,7 +262,7 @@ def remove_account_contact():
         db.session.delete(contact)
         db.session.commit()
     except Exception as e:
-        raise e
+        # raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when removing contact'}), 500)
 
     # Return success response
