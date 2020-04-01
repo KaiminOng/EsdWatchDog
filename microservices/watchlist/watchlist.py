@@ -9,7 +9,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-os.environ['DH_URI'] = 'http://esdwatchdog.com:5000'
 dataHandler_host = os.environ.get('DH_URI')
 
 @app.route('/watchlist/get/<string:account_id>', methods=['GET'])
@@ -115,4 +114,4 @@ def remove_account_watchlist():
 
 if __name__ == '__main__':
     print("Watchlist service is running...")
-    app.run(host="esdwatchdog.com", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001)

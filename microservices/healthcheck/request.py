@@ -5,9 +5,9 @@ import pika
 import os
 
 # Set environment variables ; will be stored in .env file
-os.environ['BROKER_HOSTNAME'] = 'localhost'
-os.environ['BROKER_PORT'] = '5672'
-os.environ['DH_URI'] = 'http://esdwatchdog.com:5000'
+# os.environ['BROKER_HOSTNAME'] = 'rabbitmq'
+# os.environ['BROKER_PORT'] = '5672'
+# os.environ['DH_URI'] = 'http://datahandler:5000'
 
 # Extract values from environment variables
 broker_hostname = os.environ.get('BROKER_HOSTNAME')
@@ -17,8 +17,12 @@ dh_uri = os.environ.get('DH_URI')
 # Start flask app instance
 app = Flask(__name__)
 
+<<<<<<< HEAD
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', heartbeat=0))
+=======
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
+>>>>>>> 9e729faa676a8cb1c64e875677a81492dbc9f4be
 
 try:
     channel = connection.channel()
@@ -88,4 +92,4 @@ def trigger_routine():
 
 if __name__ == '__main__':
     print("Listening for scheduled triggers...")
-    app.run(host='esdwatchdog.com', port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5002)

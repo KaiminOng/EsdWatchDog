@@ -1,0 +1,81 @@
+version: '3.7'
+
+services: 
+    mysqldb:
+        image: mysql:5.7.29
+        networks: 
+            - watchdog-net
+        volumes: 
+            - ./microservices/mysql/data:/var/lib/mysql
+            - ./microservices/mysql/setup:/docker-entrypoint-initdb.d
+        expose: 
+            - "3306"
+        environment: 
+            - MYSQL_ROOT_PASSWORD=password
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports: 
+            - 8080:15672
+        environment: 
+            - RABBITMQ_DEFAULT_USER=admin
+            - RABBITMQ_DEFAULT_PASS=password
+            - RABBITMQ_DEFAULT_VHOST=watchdog
+        networks: 
+            - watchdog-net
+        expose: 
+            - "5672"
+
+    datahandler:
+        build: ./microservices/dataHandler
+        restart: 'on-failure'
+        depends_on: 
+            - mysqldb
+        networks: 
+            - watchdog-net
+        environment: 
+            - SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:password@mysqldb:3306/watchdog
+            - SQLALCHEMY_TRACK_MODIFICATIONS=False
+        expose: 
+            - "5000"
+        
+    watchlist:
+        build: ./microservices/watchlist
+        restart: 'on-failure'
+        depends_on: 
+            - datahandler
+        networks: 
+            - watchdog-net
+        env_file: 
+            - ./env/.env.prod
+        expose: 
+            - "5001"
+                    
+    ping:
+        build: ./microservices/ping
+        restart: 'on-failure'
+        networks: 
+            - watchdog-net
+        depends_on: 
+            - rabbitmq
+        env_file: 
+            - ./env/.env.prod
+
+    healthcheck:
+        build: ./microservices/healthcheck
+        restart: 'on-failure'
+        depends_on: 
+            - datahandler
+            - rabbitmq
+        networks: 
+            - watchdog-net
+        env_file: 
+            - ./env/.env.prod
+        ports: 
+            - 8081:5002
+    
+    
+networks:
+  watchdog-net:
+    
+    
