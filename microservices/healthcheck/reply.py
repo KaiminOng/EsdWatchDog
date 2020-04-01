@@ -39,8 +39,8 @@ def receiveReport():
     channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=queue_name)
 
     # Set up queue for sending messages to notification
-    notificaitonqueue = channel.queue_declare(queue='notification', durable=True)
-    channel.queue_bind(exchange=exchange_name, queue='notification', routing_key='healthcheck.notify')
+    notificaitonqueue = channel.queue_declare(queue='notifications', durable=True)
+    channel.queue_bind(exchange=exchange_name, queue='notifications', routing_key='healthcheck.notify')
 
     # Configure queue and begin event loop for consuming messages
     channel.basic_qos(prefetch_count=1)
