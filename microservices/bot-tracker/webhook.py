@@ -47,6 +47,7 @@ def listener():
 
         if update_type:
             try:
+                print(f"Received at incoming {update_type} request!")
                 response.raise_for_status()
             except Exception:
                 print(f"Status code: {response.status_code}")
