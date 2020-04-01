@@ -12,6 +12,8 @@ if (isset($_GET['endpoint']) && isset($_GET['contacts'])) {
     $endpoint = $_GET['endpoint'];
     $contacts = $_GET['contacts'];
 }
+
+$hostname = "http://esdwatchdog.com";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -139,18 +141,19 @@ Released   : 20130902
         }
 
         $(async () => {
+            var hostname = '<?php echo $hostname; ?>';
 
             var userid = '<?php echo $user_id; ?>';
             var endpoint = '<?php echo $endpoint; ?>';
             var old_contacts = <?php echo $contacts; ?>;
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5001/contact/get/" + userid;
+            var serviceURL = hostname + ":5001/contact/get/" + userid;
 
             try {
                 const response =
                     await fetch(
                         serviceURL, {
-                        method: 'GET',
+                        method: 'GET'
                         });
 
                 const data = await response.json();
@@ -191,6 +194,7 @@ Released   : 20130902
         });
 
         $('#updateEndpoint').submit(async (event) => {
+            var hostname = '<?php echo $hostname; ?>';
 
             var userid = '<?php echo $user_id; ?>';
             var endpoint = '<?php echo $endpoint; ?>';
@@ -199,7 +203,7 @@ Released   : 20130902
             var new_contacts = $('#chats').val();
 
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5001/watchlist/update";
+            var serviceURL = hostname + ":5001/watchlist/update";
 
 
             try {
@@ -221,15 +225,18 @@ Released   : 20130902
                 const data = await response.json();
                 // console.log(data);
                 if (status != "success") {
-                    window.location.replace("homepage.php?error");
+                    var message = "Error in update, please try again.";
+                    window.location.replace("homepage.php?status=error&message=" + message);
                 } else {
-                    window.location.replace("homepage.php?success");
+                    var message = "Endpoint successfully updated."
+                    window.location.replace("homepage.php?status=success&message=" + message);
                 }
 
             } catch (error) {
                 // Errors when calling the service; such as network error, 
                 // service offline, etc
-                window.location.replace("homepage.php?error");
+                var message = "Error connecting to the service, please try again later.";
+                window.location.replace("homepage.php?status=error&message=" + message);
 
             } // error
         });
