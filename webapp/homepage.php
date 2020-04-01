@@ -92,16 +92,16 @@ Released   : 20130902
 
 				<p id="main-container"></p>
 
-				<?php 
-				if(isset($_GET['status'])){
+				<?php
+				if (isset($_GET['status'])) {
 					$status = $_GET['status'];
 					$message = $_GET['message'];
 
-					if ($status === 'success'){
+					if ($status === 'success') {
 						echo "<ul class='list-group text-center font-weight-bold'>
 						<li class='list-group-item list-group-item-success'>{$message}</li>
 						</ul>";
-					} else{
+					} else {
 						echo "<ul class='list-group text-center font-weight-bold'>
 						<li class='list-group-item list-group-item-danger'>{$message}</li>
 						</ul>";
@@ -130,7 +130,7 @@ Released   : 20130902
 								<div class="table100-body js-pscroll">
 									<table id="displaytable">
 										<tbody>
-											
+
 										</tbody>
 									</table>
 								</div>
@@ -158,12 +158,12 @@ Released   : 20130902
 				.append("<label>" + message + "</label>");
 		}
 
-		
-		
+
+
 
 		// anonymous async function 
 		// - using await requires the function that calls it to be async
-		setTimeout((async () => {
+		$((async () => {
 			window.history.replaceState({}, document.title, "/webapp/homepage.php");
 			var userid = '<?php echo $user_id; ?>';
 			var hostname = '<?php echo $hostname; ?>';
@@ -173,11 +173,11 @@ Released   : 20130902
 
 			try {
 				const response =
-                await fetch(
-                    serviceURL, {
-                    method: 'GET',
-				});
-				
+					await fetch(
+						serviceURL, {
+							method: 'GET',
+						});
+
 				const data = await response.json();
 				var status = data.status;
 				console.log(data)
@@ -194,36 +194,36 @@ Released   : 20130902
 							"<td class='cell100 t1column1'>" + index + "</td>" +
 							"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
 							"<td class='cell100 t1column3'><ol>";
-						for (var c of r.contacts){
+						for (var c of r.contacts) {
 							eachRow += "<li>" + c.chat_title + "</li>";
 						}
-						
+
 						if (r.status === 'healthy') {
-                            var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
-                        } else if (r.status === 'unhealthy') {
-                            var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
-                        } else{
+							var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
+						} else if (r.status === 'unhealthy') {
+							var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
+						} else {
 							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						}
-						
+
 						var last_checked = '';
-						if (last_checked === null){
+						if (last_checked === null) {
 							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
-						} else{
+						} else {
 							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + last_checked + "</button>";
 						}
-						
+
 
 						eachRow += "</ol></td>" +
 							"<td class='cell100 t1column4'>" + health + "</td>" +
 							"<td class='cell100 t1column5'>" + timestamp + "</td>" +
 							// "<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
-							"<td class='cell100 t1column7'>" + 
+							"<td class='cell100 t1column7'>" +
 							// "<button class='btn btn-primary' style='font-size:10px' id='updateBtn' >Update</button>" +
 							// "<form method='GET' action='update.php'>" + "<input type='hidden' name='endpoint' value=" + r.endpoint + ">" +
 							// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
 							"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
-							
+
 							"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
 
 						rows += "<tr>" + eachRow + "</tr>";
@@ -243,9 +243,9 @@ Released   : 20130902
 					('There is a problem retrieving data, please try again later.<br />');
 
 			} // error
-		}) , 5000);
+		}));
 
-		
+
 
 		// function updateURL(endpoint){
 		// 	"<%Session['endpoint'] = " + endpoint + "; %>";
@@ -302,8 +302,7 @@ Released   : 20130902
 				// delete url if press ok
 				var dest = $('#deleteBtn').data('dest');
 				$("#deleteBtn").attr("href", dest);
-			}
-			else{
+			} else {
 				return false;
 			}
 		});
