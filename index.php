@@ -38,7 +38,7 @@ $bot_username = BOT_USERNAME;
       </div>
       <div id="menu">
       <center>
-          <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login=<?= $bot_username?> data-size="large"  data-auth-url="microservices/authentication/authentication.php" data-request-access="write"></script>
+          <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login=<?= $bot_username?> data-size="large"  data-auth-url="webapp/authentication/authentication.php" data-request-access="write"></script>
         </center>
       </div>
     </div>
