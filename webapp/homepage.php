@@ -198,15 +198,14 @@ Released   : 20130902
 							eachRow += "<li>" + c.chat_title + "</li>";
 						}
 						
-						if (r.status === 'Healthy') {
+						if (r.status === 'healthy') {
                             var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
-                        } else if (r.status === 'Unhealthy') {
+                        } else if (r.status === 'unhealthy') {
                             var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
                         } else{
 							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						}
 						
-						var last_checked = '09/09/2019';
 						if (last_checked === null){
 							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						} else{
