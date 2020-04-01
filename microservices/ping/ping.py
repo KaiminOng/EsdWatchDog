@@ -44,7 +44,7 @@ async def main(urls):
     The session contains a cookie storage and connection pool, 
     thus cookies and connections are shared between HTTP requests sent by the same session.
     '''
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5), raise_for_status=True) as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5)) as session:
         for url in urls:
             info = {}
             info["endpoint"] = str(url)
