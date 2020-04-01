@@ -18,7 +18,7 @@ dh_uri = os.environ.get('DH_URI')
 
 # Initiate connection to message broker
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog'))
+    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', heartbeat=0))
 
 try:
     channel = connection.channel()
@@ -39,8 +39,8 @@ def receiveReport():
     channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=queue_name)
 
     # Set up queue for sending messages to notification
-    notificaitonqueue = channel.queue_declare(queue='notifications', durable=True)
-    channel.queue_bind(exchange=exchange_name, queue='notifications', routing_key='healthcheck.notify')
+    # notify_queue = channel.queue_declare(queue='notifications', durable=True)
+    # channel.queue_bind(exchange=exchange_name, queue='notifications', routing_key='healthcheck.notify')
 
     # Configure queue and begin event loop for consuming messages
     channel.basic_qos(prefetch_count=1)
@@ -54,7 +54,7 @@ def processReport(channel, method, properties, body):
 
     report = json.loads(body)['endpoints']
 
-    # print(report)
+    print(report)
 
     alerts = []
 
@@ -64,8 +64,8 @@ def processReport(channel, method, properties, body):
 
     for report_row in report:
         endpoint = report_row['endpoint']
-        # Check if previous report showed null
-        if previous_report[endpoint] == 'null' or previous_report[endpoint] != report_row['status']:
+        # Check if previous report was different from new report
+        if previous_report[endpoint] != report_row['status']:
             alerts.append(report_row)
 
     # Get contact points for changed endpoints
@@ -92,16 +92,16 @@ def processReport(channel, method, properties, body):
     #     ]
     # }
 
-    # Add endpoint events
-    add_event_route = '/endpoint/event/new'
-    print("Sending new events information...")
-    response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
+        # Add endpoint events
+        add_event_route = '/endpoint/event/new'
+        print("Sending new events information...")
+        response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
 
-    try:
-        response.raise_for_status()
-    except Exception as e:
-        print("Error occured when adding new events")
-        # raise e
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            print("Error occured when adding new events")
+            # raise e
 
     # print(report)
 
@@ -117,7 +117,7 @@ def processReport(channel, method, properties, body):
         # raise e
 
     print("Report processing complete!")
-    # channel.basic_ack(delivery_tag=method.delivery_tag)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 

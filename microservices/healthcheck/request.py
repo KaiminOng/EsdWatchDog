@@ -18,7 +18,7 @@ dh_uri = os.environ.get('DH_URI')
 app = Flask(__name__)
 
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog'))
+    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', heartbeat=0))
 
 try:
     channel = connection.channel()
