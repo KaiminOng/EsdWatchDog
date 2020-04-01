@@ -9,17 +9,19 @@ else{
     header('Location: homepage.php');
 }
 
+$hostname = "http://esdwatchdog.com";
 ?>
 
 <html>
     <body>
         <script>
         $(async () => {
+            var hostname = '<?php echo $hostname; ?>';
 
             var userid = '<?php echo $user_id; ?>';
             var endpoint = '<?php echo $endpoint; ?>';
             // Change serviceURL to your own
-            var serviceURL = "http://esdwatchdog:5001/watchlist/remove";
+            var serviceURL = hostname + ":5001/watchlist/remove";
 
             try {
                 const response =
@@ -34,12 +36,16 @@ else{
                 var status = data.status;
 
                 if (status != "success") {
-                    window.location.replace("homepage.php?error");
+                    var message = "Error in deletion, please try again.";
+                    window.location.replace("homepage.php?status=error&message=" + message);
                 } else {
-                    window.location.replace("homepage.php?success");                    
+                    var message = "Endpoint successfully deleted."
+                    window.location.replace("homepage.php?status=success&message=" + message);
                 }
+
             } catch (error) {
-                window.location.replace("homepage.php?error");
+                var message = "Error connecting to the service, please try again later.";
+                window.location.replace("homepage.php?status=error&message=" + message);
             }
         });
         </script>

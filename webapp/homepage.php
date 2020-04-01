@@ -167,9 +167,10 @@ Released   : 20130902
 			window.history.replaceState({}, document.title, "/webapp/homepage.php");
 			var userid = '<?php echo $user_id; ?>';
 			var hostname = '<?php echo $hostname; ?>';
-			// var dict = {};
-			// Change serviceURL to your own
 			var serviceURL = hostname + ":5001/watchlist/get/" + userid;
+
+			var ts = Math.round((new Date()).getTime() / 1000);
+			// var test = Math.round((new Date()).getTime() / 1000) - 3598;
 
 			try {
 				const response =
@@ -197,20 +198,23 @@ Released   : 20130902
 						for (var c of r.contacts) {
 							eachRow += "<li>" + c.chat_title + "</li>";
 						}
-
+						
 						if (r.status === 'healthy') {
-							var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
-						} else if (r.status === 'unhealthy') {
-							var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
-						} else {
+                            var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
+                        } else if (r.status === 'unhealthy') {
+                            var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
+                        } else{
 							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						}
-
-						var last_checked = '';
-						if (last_checked === null) {
+						
+						if (r.last_checked === 'null'){
 							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
-						} else {
-							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + last_checked + "</button>";
+						} else{
+							var last_checked = ts - r.last_checked;
+							var hours = Math.floor(last_checked / 60 / 60);
+							var minutes = Math.floor(last_checked / 60) - (hours * 60);
+							var seconds = last_checked % 60;
+							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + hours + "h " + minutes + "m " + seconds + "s ago</button>";
 						}
 
 
@@ -307,48 +311,6 @@ Released   : 20130902
 			}
 		});
 
-		$('#graphBtn').click(async (event) => {
-			location.href = "graph.php";
-			var userid = '<?php echo $user_id; ?>';
-
-			var endpoint = $('#endpoint').val();
-			// GET SELECTED CHAT GROUP'S CHAT ID
-			// var chatgroup = $('#chatgroup').val(); ???
-
-			// Change serviceURL to your own
-			var serviceURL = "http://esdwatchdog:5001/endpoint/edit";
-
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'POST',
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({
-								userID: userid,
-								endpoint: endpoint,
-								chatID: chatid
-							})
-						});
-
-				const data = await response.json();
-				// console.log(data);
-				if (data[1] === 400) {
-					document.getElementById("message").innerHTML = data[0].message
-				} else if (data[1] === 201) {
-					document.getElementById("message").innerHTML = title + " has been succesfully added."
-				}
-
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				showError
-					('There is a problem editing the endpoint, please try again later.<br />' + error);
-
-			} // error
-		});
 	</script>
 </body>
 
