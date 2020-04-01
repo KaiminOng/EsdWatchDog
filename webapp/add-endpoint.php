@@ -7,8 +7,8 @@ if (isset($_COOKIE['tg_user'])) {
 	$first_name = $user_info['first_name'];
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
-
-$hostname = "http://esdwatchdog.com";
+$hostname_get = "http://watchlist:5001";
+$hostname_add = "http://datahandler:5000";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -30,6 +30,9 @@ Released   : 20130902
 	<title>G5T6 Watchdog Application</title>
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
+
+
+
 	<link rel="icon" type="image/png" href="images/icons/favicon.ico" />
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="src/tables/vendor/bootstrap/css/bootstrap.min.css">
@@ -48,10 +51,9 @@ Released   : 20130902
 	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 	<link href="src/default.css" rel="stylesheet" type="text/css" media="all" />
 	<link href="src/fonts.css" rel="stylesheet" type="text/css" media="all" />
+	<!-- <link href="src/dropdown.css" rel="stylesheet" type="text/css" media="all" /> -->
 
 	<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
-
-
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -145,11 +147,13 @@ Released   : 20130902
 		// anonymous async function 
 
 		$(async () => {
-			var hostname = '<?php echo $hostname; ?>';
+			var hostname_add = '<?php echo $hostname_add; ?>';
+			var hostname_get = '<?php echo $hostname_get; ?>';
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = hostname + ":5001/contact/get/" + userid;
+			var serviceURL = hostname_get + ":5001/contact/get/" + userid;
+			// var serviceURL = "http://esdwatchdog.com:5001/contact/get/" + userid;
 
 			try {
 				const response =
@@ -170,7 +174,7 @@ Released   : 20130902
 						"<td class='cell100 t2column1' align:left'>" +
 							"<input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>" + 
 						"<td class='cell100 t2column2'>" + 
-						"<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
+					"<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
 
 					for (const c of contacts) {
 						row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
@@ -203,7 +207,8 @@ Released   : 20130902
 				var chats = $('#chats').val();
 
 				// Change serviceURL to your own
-				var serviceURL = hostname + ":5000/endpoint/new";
+				var serviceURL = hostname_add + ":5000/endpoint/new";
+				// var serviceURL = "http://esdwatchdog.com:5000/endpoint/new";
 
 
 				try {
@@ -243,6 +248,21 @@ Released   : 20130902
 			return false;
 		});
 	</script>
+<!-- 
+	<script type="text/javascript">
+
+	var checkList = document.getElementById('list1');
+	checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+		if (checkList.classList.contains('visible'))
+			checkList.classList.remove('visible');
+		else
+			checkList.classList.add('visible');
+	}
+
+	checkList.onblur = function(evt) {
+		checkList.classList.remove('visible');
+	}
+	</script> -->
 </body>
 
 </html>
