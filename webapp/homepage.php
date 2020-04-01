@@ -206,10 +206,10 @@ Released   : 20130902
 							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						}
 						
-						if (last_checked === null){
+						if (r.last_checked === null){
 							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 						} else{
-							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + last_checked + "</button>";
+							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + r.last_checked + "</button>";
 						}
 						
 
