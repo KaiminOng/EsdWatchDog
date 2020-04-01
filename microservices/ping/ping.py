@@ -17,11 +17,11 @@ import random
 # Use a message-broker with 'direct' exchange to enable interaction
 import pika
 
-hostname = "localhost" # default hostname
-port = 5672 # default port`
+hostname = os.environ.get('BROKER_HOSTNAME') # default hostname
+port = os.environ.get('BROKER_PORT')
 
 # connect to the broker and set up a communication channel in the connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, virtual_host='watchdog'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port, heartbeat=0, virtual_host='watchdog', credentials=pika.PlainCredentials('admin', 'password')))
     # Note: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
     # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls
 channel = connection.channel()
@@ -44,7 +44,7 @@ async def main(urls):
     The session contains a cookie storage and connection pool, 
     thus cookies and connections are shared between HTTP requests sent by the same session.
     '''
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5), raise_for_status=True) as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5)) as session:
         for url in urls:
             info = {}
             info["endpoint"] = str(url)

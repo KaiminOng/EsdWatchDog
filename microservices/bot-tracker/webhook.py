@@ -22,7 +22,6 @@ def listener():
         chat_id = chat_info['id']
         chat_type = chat_info['type']
         chat_title = chat_info.get('title', 'private')
-        chat_text = parsed_req['message']['text']
 
         # Get sender information
         user_id = parsed_req['message']['from']['id']
@@ -48,6 +47,7 @@ def listener():
 
         if update_type:
             try:
+                print(f"Received at incoming {update_type} request!")
                 response.raise_for_status()
             except Exception:
                 print(f"Status code: {response.status_code}")

@@ -9,7 +9,7 @@ else{
     header('Location: homepage.php');
 }
 
-$hostname = "http://esdwatchdog.com";
+$hostname = "http://watchlist:5001";
 ?>
 
 <html>

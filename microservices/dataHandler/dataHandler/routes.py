@@ -251,7 +251,7 @@ def remove_account_contact():
         return make_response(jsonify({'status': e.status, 'message': e.message}), e.http_status_code)
 
     # Get all child rows
-    accountEndpoint.query.filter_by(account_id=request.json['account_id'], chat_id=request.json['chat_id']).delete()
+    child_rows = accountEndpoint.query.filter_by(account_id=request.json['account_id'], chat_id=request.json['chat_id']).delete()
 
     # Get chat_id to delete
     contact = Contact.query.filter_by(chat_id=request.json['chat_id'], chat_owner_id=request.json['account_id']).first_or_404(
@@ -262,6 +262,7 @@ def remove_account_contact():
         db.session.delete(contact)
         db.session.commit()
     except Exception as e:
+        # raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when removing contact'}), 500)
 
     # Return success response
