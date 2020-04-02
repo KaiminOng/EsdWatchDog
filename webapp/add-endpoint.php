@@ -106,16 +106,20 @@ Released   : 20130902
 									<table align="center">
 										<thead>
 											<tr class="row100 head">
-												<th class="cell100 t2column1" style="width:15em">Website</th>
+												<th class="cell100 t2column1" style="width:15em">Website</th>												
+											</tr>
+											<tr>
+												<td class='cell100 t2column1'><input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>
+											</tr>
+											<tr>
 												<th class="cell100 t2column2" style="width:12em">Chat Group</th>
-												<th class="cell100 t2column3" style="width:7em"></th>
 											</tr>
 										</thead>
 									</table>
 								</div>
 
 								<div class="table100-body js-pscroll">
-									<form id='addEndpoint'>
+									<form id='addEndpoint' name='addEndpoint'>
 										<table id="creationtable">
 											<tbody>
 
@@ -171,17 +175,21 @@ Released   : 20130902
 					var contacts = data.result;
 					// for loop to setup all table rows with obtained contacts data
 					var row = "<tr class='row100 body'>" +
-						"<td class='cell100 t2column1' align:left'>" +
-							"<input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>" + 
-						"<td class='cell100 t2column2'>" + 
-					"<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
+						"<td class='cell100 t2column1' align:left'>";
+					// "<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
+
+					// for (const c of contacts) {
+					// 	row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
+					// }
+
+					// row += "</select></td>" +
 
 					for (const c of contacts) {
-						row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
+						row += "<label><input type='checkbox' name='chats' value='" + c.chat_id + "'/>" + c.chat_title + "</label>";
 					}
 
-					row += "</select></td>" +
-						"<td class='cell100 t2column3'><input id='addBtn' class='btn btn-primary' type='submit' style='font-size:13px' value='Add'></td></tr>";
+					row += "</td></tr>" +
+						"<tr class='row100 body'><td class='cell100 t2column1'><input id='addBtn' class='btn btn-primary' type='submit' style='font-size:13px' value='Add'></td></tr>";
 
 
 					// add all the rows to the table
@@ -204,7 +212,7 @@ Released   : 20130902
 
 				var endpoint = $('#endpoint').val();
 				// GET SELECTED CHAT GROUP'S CHAT ID
-				var chats = $('#chats').val();
+				var chats = getCheckedValues();
 
 				// Change serviceURL to your own
 				var serviceURL = hostname_add + ":5000/endpoint/new";
@@ -247,6 +255,18 @@ Released   : 20130902
 			});
 			return false;
 		});
+
+		function getCheckedValues(){
+			var length = document.addEndpoint.chats.length;
+			var chats_selected = [];
+			for (i=0; i<length; i++){
+				var checkedVal = document.addEndpoint.chats[i].checked;
+				if (checkedVal){
+					chats_selected.push(document.addEndpoint.chats[i].value);
+				}
+			}
+			return chats_selected;
+		}
 	</script>
 <!-- 
 	<script type="text/javascript">
