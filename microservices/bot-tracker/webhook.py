@@ -1,4 +1,5 @@
 from flask import Flask, request, make_response, jsonify
+import os
 import requests
 
 app = Flask(__name__)
@@ -14,7 +15,7 @@ def listener():
         update_type_index = {'left_chat_participant' : 'remove', 'new_chat_participant' : 'add'}
 
         # Define endpoints
-        datahandler_host = "http://localhost:5000"
+        datahandler_host = os.environ.get('DH_URI')
         endpoint_index = {'add' : f'{datahandler_host}/account/contact/new', 'remove': f'{datahandler_host}/account/contact/remove'}
 
         # Get chat information
