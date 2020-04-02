@@ -102,7 +102,7 @@ services:
 
 
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin:fpm-alpine
+        image: phpmyadmin/phpmyadmin:latest
         networks: 
             - watchdog-net
         ports: 
