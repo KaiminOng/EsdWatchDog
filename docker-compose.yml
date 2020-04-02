@@ -49,7 +49,7 @@ services:
         env_file: 
             - ./env/.env.prod
         expose: 
-            - "5001"
+            - 5001:5001
                     
     ping:
         build: ./microservices/ping
