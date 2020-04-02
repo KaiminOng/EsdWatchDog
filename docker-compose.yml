@@ -48,7 +48,7 @@ services:
             - watchdog-net
         env_file: 
             - ./env/.env.prod
-        expose: 
+        ports: 
             - 5001:5001
                     
     ping:
