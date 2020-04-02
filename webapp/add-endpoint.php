@@ -7,8 +7,8 @@ if (isset($_COOKIE['tg_user'])) {
 	$first_name = $user_info['first_name'];
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
-$hostname_get = "http://watchlist:5001";
-$hostname_add = "http://datahandler:5000";
+$hostname_get = "http://watchlist";
+$hostname_add = "http://datahandler";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

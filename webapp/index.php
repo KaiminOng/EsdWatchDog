@@ -15,8 +15,8 @@ $bot_username = BOT_USERNAME;
     <title>G5T6 WatchDog</title>
 
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
-    <link href="webapp/src/default.css" rel="stylesheet" type="text/css" media="all" />
-    <link href="webapp/src/fonts.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="src/default.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="src/fonts.css" rel="stylesheet" type="text/css" media="all" />
 
     <!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
 
@@ -38,7 +38,7 @@ $bot_username = BOT_USERNAME;
       </div>
       <div id="menu">
       <center>
-          <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login=<?= $bot_username?> data-size="large"  data-auth-url="webapp/authentication/authentication.php" data-request-access="write"></script>
+          <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login=<?= $bot_username?> data-size="large"  data-auth-url="authentication/authentication.php" data-request-access="write"></script>
         </center>
       </div>
     </div>

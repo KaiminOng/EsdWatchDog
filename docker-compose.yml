@@ -15,14 +15,14 @@ services:
 
     rabbitmq:
         image: rabbitmq:3-management
-        ports: 
-            - 8080:15672
         environment: 
             - RABBITMQ_DEFAULT_USER=admin
             - RABBITMQ_DEFAULT_PASS=password
             - RABBITMQ_DEFAULT_VHOST=watchdog
         networks: 
             - watchdog-net
+        ports: 
+            - 15672:15672
         expose: 
             - "5672"
 
@@ -72,9 +72,49 @@ services:
         env_file: 
             - ./env/.env.prod
         ports: 
-            - 8081:5002
-    
-    
+            - 5002:5002
+
+    webapp:
+        image: trafex/alpine-nginx-php7
+        restart: 'on-failure'
+        depends_on: 
+            - datahandler
+            - watchlist
+        volumes: 
+            - ./webapp:/var/www/html
+            - ./webapp/conf/watchdog.conf:/etc/nginx/conf.d/server.conf
+            - ./webapp/conf/php.ini:/etc/php7/conf.d/settings.ini
+        networks: 
+            - watchdog-net
+        ports: 
+            - 80:8000
+
+    bot-tracker:
+        build: ./microservices/bot-tracker
+        restart: 'on-failure'
+        depends_on: 
+            - datahandler
+        networks: 
+            - watchdog-net
+        ports: 
+            - 8000:8000
+        env_file: 
+            ./env/.env.prod
+
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        networks: 
+            - watchdog-net
+        ports: 
+            - 8080:80
+        environment: 
+            - PMA_HOST=mysqldb
+            - MYSQL_ROOT_PASSWORD=password
+            - PMA_USER=root
+            - PMA_PASSWORD=password
+
+
 networks:
   watchdog-net:
     

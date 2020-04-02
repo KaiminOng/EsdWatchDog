@@ -163,11 +163,7 @@ Released   : 20130902
 
 		// anonymous async function 
 		// - using await requires the function that calls it to be async
-<<<<<<< HEAD
-		const x = async () => {
-=======
 		$((async () => {
->>>>>>> de7fe4cccfdcc56e1fbdaaebd8cdb2a711f61f0d
 			window.history.replaceState({}, document.title, "/webapp/homepage.php");
 			var userid = '<?php echo $user_id; ?>';
 			var hostname = '<?php echo $hostname; ?>';
@@ -222,25 +218,6 @@ Released   : 20130902
 							}
 							
 
-<<<<<<< HEAD
-							eachRow += "</ol></td>" +
-								"<td class='cell100 t1column4'>" + health + "</td>" +
-								"<td class='cell100 t1column5'>" + timestamp + "</td>" +
-								// "<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
-								"<td class='cell100 t1column7'>" + 
-								// "<button class='btn btn-primary' style='font-size:10px' id='updateBtn' >Update</button>" +
-								// "<form method='GET' action='update.php'>" + "<input type='hidden' name='endpoint' value=" + r.endpoint + ">" +
-								// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
-								"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
-								
-								"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px; margin:2px' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
-
-							rows += "<tr>" + eachRow + "</tr>";
-							index += 1;
-						}
-						// add all the rows to the table
-						$('#displaytable tbody').html(rows);
-=======
 			try {
 				const response =
 					await fetch(
@@ -298,25 +275,8 @@ Released   : 20130902
 							"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
 
 							"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
->>>>>>> de7fe4cccfdcc56e1fbdaaebd8cdb2a711f61f0d
 
 					}
-<<<<<<< HEAD
-				} catch (error) {
-					// Errors when calling the service; such as network error, 
-					// service offline, etc
-					console.log(error)
-					showError
-						('There is a problem retrieving data, please try again later.<br />');
-				} // error
-
-				await new Promise(k=> setTimeout(k, 5000));
-			}
-		};
-
-		x();
-
-=======
 					// add all the rows to the table
 					$('#displaytable tbody').append(rows);
 					// '<%session_start(); %>';
@@ -331,7 +291,6 @@ Released   : 20130902
 
 			} // error
 		}));
->>>>>>> de7fe4cccfdcc56e1fbdaaebd8cdb2a711f61f0d
 
 
 
