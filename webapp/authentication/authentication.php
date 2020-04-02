@@ -28,7 +28,7 @@ function checkTelegramAuthorization($auth_data) {
 
 function saveTelegramUserData($auth_data) {
   $auth_data_json = json_encode($auth_data);
-  setcookie('tg_user', $auth_data_json, time() + 3600, '/', 'esdwatchdog.com');
+  setcookie('tg_user', $auth_data_json, time() + 3600, '/', 'esdwatchdog.me');
   // $_SESSION['tg_user'] = $auth_data_json;
 }
 
