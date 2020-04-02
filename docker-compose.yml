@@ -99,7 +99,18 @@ services:
             - 8000:8000
         env_file: 
             ./env/.env.prod
-        
+
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:fpm-alpine
+        networks: 
+            - watchdog-net
+        ports: 
+            - 8080:80
+        environment: 
+            - PMA_HOST=mysqldb
+            - PMA_USER=root
+            - PMA_PASSWORD=password
 
 
 networks:
