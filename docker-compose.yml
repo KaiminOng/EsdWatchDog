@@ -82,6 +82,7 @@ services:
             - watchlist
         volumes: 
             - ./webapp:/var/www/html
+            - ./webapp/conf/watchdog.conf:/etc/nginx/conf.d/server.conf
             - ./webapp/conf/php.ini:/etc/php7/conf.d/settings.ini
         networks: 
             - watchdog-net
