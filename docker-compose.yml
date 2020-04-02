@@ -115,14 +115,14 @@ services:
             - PMA_PASSWORD=password
 
 
-    notification:
-        build: ./microservices/notification
-        networks: 
-            - watchdog-net
-        env_file: 
-            - ./env/.env.prod
-        depends_on: 
-            - rabbitmq
+    # notification:
+    #     build: ./microservices/notification
+    #     networks: 
+    #         - watchdog-net
+    #     env_file: 
+    #         - ./env/.env.prod
+    #     depends_on: 
+    #         - rabbitmq
         
 
 
