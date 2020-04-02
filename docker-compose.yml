@@ -15,14 +15,14 @@ services:
 
     rabbitmq:
         image: rabbitmq:3-management
-        ports: 
-            - 8080:15672
         environment: 
             - RABBITMQ_DEFAULT_USER=admin
             - RABBITMQ_DEFAULT_PASS=password
             - RABBITMQ_DEFAULT_VHOST=watchdog
         networks: 
             - watchdog-net
+        ports: 
+            - 15672:15672
         expose: 
             - "5672"
 
