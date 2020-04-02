@@ -9,9 +9,6 @@ WORKDIR /usr/app/notification
 # Copy all project files
 COPY . ./
 
-# Change permission for run script
-RUN chmod 755 start.sh
-
 # Install requirements
 RUN pip install -r requirements.txt
 
