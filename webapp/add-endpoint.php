@@ -7,8 +7,8 @@ if (isset($_COOKIE['tg_user'])) {
 	$first_name = $user_info['first_name'];
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
-$hostname_get = "http://watchlist";
-$hostname_add = "http://datahandler";
+$hostname_get = "http://watchlist:5001";
+$hostname_add = "http://datahandler:5000";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -156,7 +156,7 @@ Released   : 20130902
 
 			var userid = '<?php echo $user_id; ?>';
 			// Change serviceURL to your own
-			var serviceURL = hostname_get + ":5001/contact/get/" + userid;
+			var serviceURL = hostname_get + "/contact/get/" + userid;
 			// var serviceURL = "http://esdwatchdog.com:5001/contact/get/" + userid;
 
 			try {
@@ -214,7 +214,7 @@ Released   : 20130902
 				var chats = getCheckedValues();
 
 				// Change serviceURL to your own
-				var serviceURL = hostname_add + ":5000/endpoint/new";
+				var serviceURL = hostname_add + "/endpoint/new";
 				// var serviceURL = "http://esdwatchdog.com:5000/endpoint/new";
 
 
