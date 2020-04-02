@@ -72,9 +72,24 @@ services:
         env_file: 
             - ./env/.env.prod
         ports: 
-            - 8081:5002
-    
-    
+            - 5002:5002
+
+    webapp:
+        image: trafex/alpine-nginx-php7
+        restart: 'on-failure'
+        depends_on: 
+            - datahandler
+            - watchlist
+        volumes: 
+            - ./webapp:/var/www/html
+            - ./webapp/conf/php.ini:/etc/php7/conf.d/settings.ini
+        networks: 
+            - watchdog-net
+        ports: 
+            - 80:8080
+        
+
+
 networks:
   watchdog-net:
     
