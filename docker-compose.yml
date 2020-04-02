@@ -15,6 +15,11 @@ services:
 
     rabbitmq:
         image: rabbitmq:3-management
+        healthcheck:
+            test: ["CMD-SHELL", "rabbitmq-diagnostics -q check_port_connectivity && rabbitmq-diagnostics -q node_health_check"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
         environment: 
             - RABBITMQ_DEFAULT_USER=admin
             - RABBITMQ_DEFAULT_PASS=password
@@ -48,9 +53,10 @@ services:
             - watchdog-net
         env_file: 
             - ./env/.env.prod
-        ports: 
-            - 5001:5001
-                    
+        expose: 
+            - "5001"
+            
+
     ping:
         build: ./microservices/ping
         restart: 'on-failure'
@@ -96,8 +102,8 @@ services:
             - datahandler
         networks: 
             - watchdog-net
-        ports: 
-            - 8000:8000
+        expose: 
+            - "8000"
         env_file: 
             ./env/.env.prod
 
@@ -124,7 +130,75 @@ services:
         restart: 'on-failure'
         depends_on: 
             - rabbitmq
-        
+
+
+    kong-database:
+        image: postgres:9.6
+        env_file: 
+            - "./env/.db.env"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        restart: on-failure
+        stdin_open: true
+        tty: true
+        networks:
+            - watchdog-net
+        volumes:
+            - ./microservices/kong/pgdata:/var/lib/postgresql/data
+        expose: 
+            - "5432"
+    
+
+    kong-migrations:
+        image: "kong"
+        command: kong migrations bootstrap
+        depends_on:
+            - "kong-database"
+        env_file: 
+            - "./env/.kong.env"
+        networks:
+            - watchdog-net
+        restart: on-failure
+    
+
+    kong:
+        image: "kong"
+        depends_on:
+            - "kong-migrations"
+            - "kong-database"
+        env_file: 
+            - "./env/.kong.env"
+        ports:
+            - "5001:5001/tcp"
+        expose: 
+            - "8001"
+        healthcheck:
+            test: ["CMD", "kong", "health"]
+            interval: 10s
+            timeout: 10s
+            retries: 10
+        networks: 
+            - watchdog-net
+        restart: on-failure
+    
+
+    konga:
+        image: 'pantsel/konga'
+        restart: 'on-failure'
+        depends_on: 
+            - "kong-database"
+            - "kong"
+        env_file: 
+            - "./env/.konga.env"
+        networks: 
+            - watchdog-net
+        volumes: 
+            - ./microservices/kong/kongadata:/app/kongadata
+        ports: 
+            - "1337:1337/tcp"    
 
 
 networks:
