@@ -4,6 +4,8 @@ from flask_cors import CORS
 from validator import validate_request
 import requests as r
 import os
+import json
+import sys
 
 # Start flask app
 app = Flask(__name__)
@@ -45,13 +47,12 @@ def add_new_endpoint():
     # Formulate request
     api_route = '/endpoint/new'
 
-    for contact in request.json['chat_id']:
-        request_data = {'account_id' : request.json['id'], "endpoint": request.json['endpoint'], "chat_id": contact}
-        response = r.post(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
+    request_data = {'account_id' : request.json['id'], "endpoint": request.json['endpoint'], "chat_id": request.json['chat_id']}
+    response = r.post(f"{dataHandler_host}{api_route}", json=request_data, timeout=10.0)
 
     try:
         response.raise_for_status()
-    except Exception:
+    except Exception as e:
         raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when adding new endpoint'}), 500)
 
