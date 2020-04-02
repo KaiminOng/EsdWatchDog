@@ -1,167 +1,178 @@
--- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: watchdog
--- ------------------------------------------------------
--- Server version	5.7.29
+-- Host: mysqldb
+-- Generation Time: Apr 02, 2020 at 03:59 PM
+-- Server version: 5.7.29
+-- PHP Version: 7.4.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Current Database: `watchdog`
+-- Database: `watchdog`
 --
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `watchdog` /*!40100 DEFAULT CHARACTER SET latin1 */;
-
+CREATE DATABASE IF NOT EXISTS `watchdog` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `watchdog`;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `account`
 --
 
-DROP TABLE IF EXISTS `account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `account` (
   `id` varchar(120) NOT NULL,
-  `username` varchar(80) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `username` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `account`
 --
 
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('176814266','Kae97x'),('308563716','kohwayne');
-/*!40000 ALTER TABLE `account` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `account` (`id`, `username`) VALUES
+('176814266', 'Kae97x'),
+('308563716', 'kohwayne');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `accountEndpoint`
 --
 
-DROP TABLE IF EXISTS `accountEndpoint`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accountEndpoint` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `account_id` varchar(120) NOT NULL,
   `endpoint_url` varchar(120) NOT NULL,
-  `chat_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `account_id` (`account_id`,`endpoint_url`,`chat_id`),
-  KEY `endpoint_url` (`endpoint_url`),
-  CONSTRAINT `accountEndpoint_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `accountEndpoint_ibfk_2` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `chat_id` varchar(120) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `accountEndpoint`
---
-
-LOCK TABLES `accountEndpoint` WRITE;
-/*!40000 ALTER TABLE `accountEndpoint` DISABLE KEYS */;
-/*!40000 ALTER TABLE `accountEndpoint` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `contact`
 --
 
-DROP TABLE IF EXISTS `contact`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact` (
-  `chat_id` int(11) NOT NULL,
+  `chat_id` varchar(120) NOT NULL,
   `chat_owner_id` varchar(120) NOT NULL,
   `chat_title` varchar(120) DEFAULT NULL,
-  `chat_type` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`chat_id`,`chat_owner_id`),
-  KEY `chat_owner_id` (`chat_owner_id`),
-  CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`chat_owner_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `chat_type` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `contact`
---
-
-LOCK TABLES `contact` WRITE;
-/*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-/*!40000 ALTER TABLE `contact` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `endpoint`
 --
 
-DROP TABLE IF EXISTS `endpoint`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `endpoint` (
   `endpoint_url` varchar(120) NOT NULL,
   `status` varchar(20) DEFAULT NULL,
-  `last_checked` int(11) DEFAULT NULL,
-  PRIMARY KEY (`endpoint_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `last_checked` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `endpoint`
---
-
-LOCK TABLES `endpoint` WRITE;
-/*!40000 ALTER TABLE `endpoint` DISABLE KEYS */;
-/*!40000 ALTER TABLE `endpoint` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `monitoring`
 --
 
-DROP TABLE IF EXISTS `monitoring`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `monitoring` (
-  `event_id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_id` int(11) NOT NULL,
   `endpoint_url` varchar(120) NOT NULL,
   `timestamp` int(11) DEFAULT NULL,
-  `status` varchar(10) NOT NULL,
-  PRIMARY KEY (`event_id`),
-  UNIQUE KEY `endpoint_url` (`endpoint_url`,`timestamp`),
-  CONSTRAINT `monitoring_ibfk_1` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `status` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `monitoring`
+-- Indexes for dumped tables
 --
 
-LOCK TABLES `monitoring` WRITE;
-/*!40000 ALTER TABLE `monitoring` DISABLE KEYS */;
-/*!40000 ALTER TABLE `monitoring` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+--
+-- Indexes for table `account`
+--
+ALTER TABLE `account`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for table `accountEndpoint`
+--
+ALTER TABLE `accountEndpoint`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `endpoint_url` (`endpoint_url`);
+  ADD KEY `account_id` (`account_id`);
+
+--
+-- Indexes for table `contact`
+--
+ALTER TABLE `contact`
+  ADD PRIMARY KEY (`chat_id`,`chat_owner_id`),
+  ADD KEY `chat_owner_id` (`chat_owner_id`);
+
+--
+-- Indexes for table `endpoint`
+--
+ALTER TABLE `endpoint`
+  ADD PRIMARY KEY (`endpoint_url`);
+
+--
+-- Indexes for table `monitoring`
+--
+ALTER TABLE `monitoring`
+  ADD PRIMARY KEY (`event_id`),
+  ADD UNIQUE KEY `endpoint_url` (`endpoint_url`,`timestamp`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `accountEndpoint`
+--
+ALTER TABLE `accountEndpoint`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `monitoring`
+--
+ALTER TABLE `monitoring`
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `accountEndpoint`
+--
+ALTER TABLE `accountEndpoint`
+  ADD CONSTRAINT `accountEndpoint_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  ADD CONSTRAINT `accountEndpoint_ibfk_2` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`);
+  ADD CONSTRAINT `accountEndpoint_unique` UNIQUE (`account_id`, `endpoint_url`, `chat_id`);
+
+--
+-- Constraints for table `contact`
+--
+ALTER TABLE `contact`
+  ADD CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`chat_owner_id`) REFERENCES `account` (`id`);
+
+--
+-- Constraints for table `monitoring`
+--
+ALTER TABLE `monitoring`
+  ADD CONSTRAINT `monitoring_ibfk_1` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`);
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2020-04-01 16:06:49
