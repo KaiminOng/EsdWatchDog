@@ -233,6 +233,7 @@ def register_account_contact():
     try:
         db.session.commit()
     except Exception as e:
+        raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when adding new contact'}), 500)
 
     # Return success response

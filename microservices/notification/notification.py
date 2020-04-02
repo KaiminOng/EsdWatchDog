@@ -5,6 +5,7 @@ import json
 import pika
 import os
 from datetime import datetime
+import pytz
 
 # Set environment variables ; will be stored in .env file
 # os.environ['BROKER_HOSTNAME'] = 'localhost'
@@ -60,7 +61,7 @@ def telegram_bot_sendtext(chat_id, message):
     
     bot_token = '1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w'
     # bot_chatID = '-1001260714304'
-    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + chat_id + '&parse_mode=Markdown&text=' + message
+    send_text = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
 
     response = r.get(send_text)
 
@@ -72,12 +73,16 @@ def sendMessage(data):
         endpoint = event['endpoint']
         chat_ids = event['chat_id']
         timestamp = event['timestamp']
+        localFormat = "%Y-%m-%d %H:%M:%S"
         dt = datetime.fromtimestamp(timestamp)          # dt = 2018-12-25 09:27:53 (format)
+        dt = dt.astimezone(pytz.timezone('Asia/Singapore'))
+        dt = dt.strftime(localFormat)
+        
         status = event['status']
         if status == 'unhealthy':
-            message = "Hey! Your endpoint <" + endpoint + "> has been DOWN since " + str(dt) + "!"
+            message = "Hey! Your endpoint <" + endpoint + "> has been DOWN since " + dt + "!"
         else:
-             message = "Hey! Your endpoint <" + endpoint + "> has been UP since " + str(dt) + "!"
+             message = "Hey! Your endpoint <" + endpoint + "> has been UP since " + dt + "!"
 
         for chat in chat_ids:
             response = telegram_bot_sendtext(chat, message)
