@@ -183,7 +183,6 @@ Released   : 20130902
 					// }
 
 					// row += "</select></td>" +
-
 					for (const c of contacts) {
 						row += "<label><input type='checkbox' name='chats' value='" + c.chat_id + "'/>" + c.chat_title + "</label>";
 					}
