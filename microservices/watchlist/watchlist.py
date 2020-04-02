@@ -114,4 +114,4 @@ def remove_account_watchlist():
 
 if __name__ == '__main__':
     print("Watchlist service is running...")
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="watchlist", port=5001)
