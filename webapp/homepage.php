@@ -8,7 +8,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
 
-$hostname = "http://watchlist:5001";
+$hostname = "http://esdwatchdog.me:5001";
 
 ?>
 
@@ -58,7 +58,7 @@ Released   : 20130902
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-	
+
 </head>
 
 <body>
@@ -164,21 +164,21 @@ Released   : 20130902
 		// anonymous async function 
 		// - using await requires the function that calls it to be async
 		$((async () => {
-			window.history.replaceState({}, document.title, "/webapp/homepage.php");
+			window.history.replaceState({}, document.title, "homepage.php");
 			var userid = '<?php echo $user_id; ?>';
 			var hostname = '<?php echo $hostname; ?>';
-			var serviceURL = hostname + ":5001/watchlist/get/" + userid;
+			var serviceURL = hostname + "/watchlist/get/" + userid;
 
 			var ts = Math.round((new Date()).getTime() / 1000);
 			// var test = Math.round((new Date()).getTime() / 1000) - 3598;
-			while (true){
+			while (true) {
 				try {
 					const response =
-					await fetch(
-						serviceURL, {
-						method: 'GET',
-					});
-					
+						await fetch(
+							serviceURL, {
+								method: 'GET',
+							});
+
 					const data = await response.json();
 					var status = data.status;
 					console.log(data)
@@ -195,101 +195,105 @@ Released   : 20130902
 								"<td class='cell100 t1column1'>" + index + "</td>" +
 								"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
 								"<td class='cell100 t1column3'><ol>";
-							for (var c of r.contacts){
+							for (var c of r.contacts) {
 								eachRow += "<li>" + c.chat_title + "</li>";
 							}
-							
+
 							if (r.status === 'healthy') {
 								var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
 							} else if (r.status === 'unhealthy') {
 								var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
-							} else{
+							} else {
 								var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
 							}
-							
-							if (r.last_checked === null){
+
+							if (r.last_checked === null) {
 								var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
-							} else{
+							} else {
 								var last_checked = ts - r.last_checked;
 								var hours = Math.floor(last_checked / 60 / 60);
 								var minutes = Math.floor(last_checked / 60) - (hours * 60);
 								var seconds = last_checked % 60;
 								var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + hours + "h " + minutes + "m " + seconds + "s ago</button>";
 							}
-							
 
-			try {
-				const response =
-					await fetch(
-						serviceURL, {
-							method: 'GET',
-						});
 
-				const data = await response.json();
-				var status = data.status;
-				console.log(data)
+							try {
+								const response =
+									await fetch(
+										serviceURL, {
+											method: 'GET',
+										});
 
-				if (status != "success") {
-					showError(data.message);
-				} else {
-					var result = data.result;
-					// for loop to setup all table rows with obtained book data
-					var rows = "";
-					var index = 1;
-					for (var r of result) {
-						var eachRow =
-							"<td class='cell100 t1column1'>" + index + "</td>" +
-							"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
-							"<td class='cell100 t1column3'><ol>";
-						for (var c of r.contacts) {
-							eachRow += "<li>" + c.chat_title + "</li>";
+								const data = await response.json();
+								var status = data.status;
+								console.log(data)
+
+								if (status != "success") {
+									showError(data.message);
+								} else {
+									var result = data.result;
+									// for loop to setup all table rows with obtained book data
+									var rows = "";
+									var index = 1;
+									for (var r of result) {
+										var eachRow =
+											"<td class='cell100 t1column1'>" + index + "</td>" +
+											"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
+											"<td class='cell100 t1column3'><ol>";
+										for (var c of r.contacts) {
+											eachRow += "<li>" + c.chat_title + "</li>";
+										}
+
+										if (r.status === 'healthy') {
+											var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
+										} else if (r.status === 'unhealthy') {
+											var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
+										} else {
+											var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
+										}
+
+										if (r.last_checked === 'null') {
+											var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
+										} else {
+											var last_checked = ts - r.last_checked;
+											var hours = Math.floor(last_checked / 60 / 60);
+											var minutes = Math.floor(last_checked / 60) - (hours * 60);
+											var seconds = last_checked % 60;
+											var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + hours + "h " + minutes + "m " + seconds + "s ago</button>";
+										}
+
+
+										eachRow += "</ol></td>" +
+											"<td class='cell100 t1column4'>" + health + "</td>" +
+											"<td class='cell100 t1column5'>" + timestamp + "</td>" +
+											// "<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
+											"<td class='cell100 t1column7'>" +
+											// "<button class='btn btn-primary' style='font-size:10px' id='updateBtn' >Update</button>" +
+											// "<form method='GET' action='update.php'>" + "<input type='hidden' name='endpoint' value=" + r.endpoint + ">" +
+											// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
+											"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
+
+											"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
+
+									}
+									// add all the rows to the table
+									$('#displaytable tbody').append(rows);
+									// '<%session_start(); %>';
+									// '<%Session["endpoint_contacts"] = "' + dict + '"; %>';
+								}
+							} catch (error) {
+								// Errors when calling the service; such as network error, 
+								// service offline, etc
+								console.log(error)
+								showError
+									('There is a problem retrieving data, please try again later.<br />');
+
+							} // error
 						}
-						
-						if (r.status === 'healthy') {
-                            var health = "<button class='btn btn-outline-success' style='font-size:12px'>Healthy</button>";
-                        } else if (r.status === 'unhealthy') {
-                            var health = "<button class='btn btn-outline-danger' style='font-size:12px'>Unhealthy</button>";
-                        } else{
-							var health = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
-						}
-						
-						if (r.last_checked === 'null'){
-							var timestamp = "<button class='btn btn-outline-warning' style='font-size:12px'>Pending</button>";
-						} else{
-							var last_checked = ts - r.last_checked;
-							var hours = Math.floor(last_checked / 60 / 60);
-							var minutes = Math.floor(last_checked / 60) - (hours * 60);
-							var seconds = last_checked % 60;
-							var timestamp = "<button class='btn btn-outline-info' style='font-size:12px'>" + hours + "h " + minutes + "m " + seconds + "s ago</button>";
-						}
-
-
-						eachRow += "</ol></td>" +
-							"<td class='cell100 t1column4'>" + health + "</td>" +
-							"<td class='cell100 t1column5'>" + timestamp + "</td>" +
-							// "<td class='cell100 t1column6'><button type='button' class='btn btn-primary' href='graph.php?endpoint=" + r.endpoint + "&lastchecked=" + r.last_checked + "&events=" + r.events + "'>Graph</button></td>" +
-							"<td class='cell100 t1column7'>" +
-							// "<button class='btn btn-primary' style='font-size:10px' id='updateBtn' >Update</button>" +
-							// "<form method='GET' action='update.php'>" + "<input type='hidden' name='endpoint' value=" + r.endpoint + ">" +
-							// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
-							"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px;'>Update</button>" +
-
-							"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td>";
-
 					}
-					// add all the rows to the table
-					$('#displaytable tbody').append(rows);
-					// '<%session_start(); %>';
-					// '<%Session["endpoint_contacts"] = "' + dict + '"; %>';
 				}
-			} catch (error) {
-				// Errors when calling the service; such as network error, 
-				// service offline, etc
-				console.log(error)
-				showError
-					('There is a problem retrieving data, please try again later.<br />');
-
-			} // error
+			}
 		}));
 
 
@@ -353,7 +357,6 @@ Released   : 20130902
 				return false;
 			}
 		});
-
 	</script>
 </body>
 
