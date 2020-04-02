@@ -109,7 +109,7 @@ ALTER TABLE `account`
 --
 ALTER TABLE `accountEndpoint`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `endpoint_url` (`endpoint_url`);
+  ADD KEY `endpoint_url` (`endpoint_url`),
   ADD KEY `account_id` (`account_id`);
 
 --
@@ -157,7 +157,7 @@ ALTER TABLE `monitoring`
 --
 ALTER TABLE `accountEndpoint`
   ADD CONSTRAINT `accountEndpoint_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  ADD CONSTRAINT `accountEndpoint_ibfk_2` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`);
+  ADD CONSTRAINT `accountEndpoint_ibfk_2` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`),
   ADD CONSTRAINT `accountEndpoint_unique` UNIQUE (`account_id`, `endpoint_url`, `chat_id`);
 
 --
