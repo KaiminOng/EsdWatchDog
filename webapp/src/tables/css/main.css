@@ -186,7 +186,7 @@ table {
 th, td {
   font-weight: unset;
   /* padding-right: 5px; */
-  padding-left: 3px;
+  /* padding-left: 3px; */
   text-align: center;
 }
 
@@ -198,30 +198,30 @@ th, td {
 
 .t1column2 {
   width: 20%;
-  /* align-self: center; */
-  padding-left: 1px;
-  padding-right: 1px;
+  align-self: center;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .t1column3 {
   width: 25%;
-  align-self: left;
-  padding-left: 1px;
-  padding-right: 1px;
+  align-self: center;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .t1column4 {
   width: 10%;
   align-self: center;
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .t1column5 {
   width: 15%;
   align-self: center;
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .t1column6 {
@@ -231,8 +231,8 @@ th, td {
 .t1column7 {
   width: 20%;
   align-self: center;
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .t2column1 {

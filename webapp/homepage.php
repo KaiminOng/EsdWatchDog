@@ -196,11 +196,11 @@ Released   : 20130902
 						
 						for (var r of result) {
 							var eachRow =
-								"<tr><td class='cell100 t1column1'>" + index + "</td>" +
+								"<tr><td class='cell100 t1column'>" + index + "</td>" +
 								"<td class='cell100 t1column2'>" + r.endpoint + "</td>" +
-								"<td class='cell100 t1column3'><ol>";
+								"<td class='cell100 t1column3' style='text-align: center'><ol>";
 							for (var c of r.contacts) {
-								eachRow += "<li style='text-align:left;'>" + c.chat_title + "</li>";
+								eachRow += "<li>" + c.chat_title + "</li>";
 							}
 
 							if (r.status === 'healthy') {

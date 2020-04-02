@@ -34,11 +34,12 @@
 	}
 
 	ol
-	{
+	{	
+		align-content: center ;
+		padding-left: 5px;
 		padding-top: 13px;
 		list-style: decimal;
 	}
-	
 	
 	p
 	{
