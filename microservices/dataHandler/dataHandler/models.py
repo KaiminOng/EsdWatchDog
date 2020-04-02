@@ -41,7 +41,7 @@ class Contact(db.Model):
 
     __tablename__ = 'contact'
 
-    chat_id = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    chat_id = db.Column(db.String(120), primary_key=True)
     chat_owner_id = db.Column(db.String(120), db.ForeignKey("account.id"), primary_key=True)
     chat_title = db.Column(db.String(120))
     chat_type = db.Column(db.String(20))
@@ -69,9 +69,8 @@ class accountEndpoint(db.Model):
     account_id = db.Column(db.String(120), db.ForeignKey("account.id"), nullable=False)
     endpoint_url = db.Column(db.String(120), db.ForeignKey("endpoint.endpoint_url"), nullable=False)
     # chat_id = db.Column(db.Integer, db.ForeignKey("contact.chat_id"), nullable=False)
-    chat_id = db.Column(db.Integer, nullable=False)
+    chat_id = db.Column(db.String(120), nullable=False)
 
-    __table_args__ = (db.UniqueConstraint(account_id, endpoint_url, chat_id), )
     
     account = db.relationship('Account', backref="watchlist")
     endpoint = db.relationship('Endpoint', backref="watchers")

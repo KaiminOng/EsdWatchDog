@@ -30,8 +30,6 @@ Released   : 20130902
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 
-
-
 	<link rel="icon" type="image/png" href="images/icons/favicon.ico" />
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="src/tables/vendor/bootstrap/css/bootstrap.min.css">
@@ -50,7 +48,7 @@ Released   : 20130902
 	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 	<link href="src/default.css" rel="stylesheet" type="text/css" media="all" />
 	<link href="src/fonts.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- <link href="src/dropdown.css" rel="stylesheet" type="text/css" media="all" /> -->
+	<link href="src/checkbox.css" rel="stylesheet" type="text/css" media="all" />
 
 	<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
 
@@ -101,31 +99,31 @@ Released   : 20130902
 					<div class="container-table100">
 						<div class="wrap-table100">
 							<div class="table100 ver2 m-b-110">
-								<div class="table100-head">
-									<table align="center">
-										<thead>
-											<tr class="row100 head">
-												<th class="cell100 t2column1" style="width:15em">Website</th>												
-											</tr>
-											<tr>
-												<td class='cell100 t2column1'><input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>
-											</tr>
-											<tr>
-												<th class="cell100 t2column2" style="width:12em">Chat Group</th>
-											</tr>
-										</thead>
-									</table>
-								</div>
+								<form id='addEndpoint' name='addEndpoint'>
+									<div class="table100-head">
+										<table align="center">
+											<thead>
+												<tr class="row100 head">
+													<th class="cell100 t2column1" style="width:15em">Website</th>
+												</tr>
+											</thead>
+										</table>
+									</div>
 
-								<div class="table100-body js-pscroll">
-									<form id='addEndpoint' name='addEndpoint'>
-										<table id="creationtable">
+									<div class="table100-body js-pscroll">
+										<table align="center" id='creationtable'>
 											<tbody>
+												<tr>
+													<td class='cell100 t2column1'><input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>
+												</tr>
+												<tr>
+													<th class="cell100 t2column1" style="width:12em">Available Chat Group</th>
+												</tr>
 
 											</tbody>
 										</table>
-									</form>
-								</div>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -145,6 +143,21 @@ Released   : 20130902
 			// Display an error under the main container
 			$('#main-container')
 				.append("<label>" + message + "</label>");
+		}
+
+		function getCheckedValues() {
+			var length = document.addEndpoint.chats.length;
+			var chats_selected = [];
+			$.each($("input[name='chats']:checked"), function(){
+				chats_selected.push($(this).val());
+			});
+			// for (i = 0; i < length; i++) {
+			// 	var checkedVal = document.addEndpoint.chats[i].checked;
+			// 	if (checkedVal) {
+			// 		chats_selected.push(document.addEndpoint.chats[i].value);
+			// 	}
+			// }
+			return chats_selected;
 		}
 
 		// anonymous async function 
@@ -173,7 +186,7 @@ Released   : 20130902
 					var contacts = data.result;
 					// for loop to setup all table rows with obtained contacts data
 					var row = "<tr class='row100 body'>" +
-						"<td class='cell100 t2column1' align:left'>";
+							"<td class='cell100 t2column2' style='text-align:left'>";
 					// "<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
 
 					// for (const c of contacts) {
@@ -182,7 +195,8 @@ Released   : 20130902
 
 					// row += "</select></td>" +
 					for (const c of contacts) {
-						row += "<label><input type='checkbox' name='chats' value='" + c.chat_id + "'/>" + c.chat_title + "</label>";
+						row += "<label class='checkboxcontainer'>" + c.chat_title + "<input type='checkbox' name='chats' value='" + c.chat_id + "'><span class='checkmark'></span></label>";
+						
 					}
 
 					row += "</td></tr>" +
@@ -202,9 +216,9 @@ Released   : 20130902
 
 
 			$('#addEndpoint')[0].addEventListener("submit", async (event) => {
-				
+
 				event.preventDefault();
-				
+
 				var userid = '<?php echo $user_id; ?>';
 
 				var endpoint = $('#endpoint').val();
@@ -253,19 +267,10 @@ Released   : 20130902
 			return false;
 		});
 
-		function getCheckedValues(){
-			var length = document.addEndpoint.chats.length;
-			var chats_selected = [];
-			for (i=0; i<length; i++){
-				var checkedVal = document.addEndpoint.chats[i].checked;
-				if (checkedVal){
-					chats_selected.push(document.addEndpoint.chats[i].value);
-				}
-			}
-			return chats_selected;
-		}
+		
+
 	</script>
-<!-- 
+	<!-- 
 	<script type="text/javascript">
 
 	var checkList = document.getElementById('list1');

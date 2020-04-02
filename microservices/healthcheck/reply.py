@@ -60,11 +60,11 @@ def processReport(channel, method, properties, body):
     for report_row in report:
         endpoint = report_row['endpoint']
         # Check if previous report was different from new report
-        if previous_report[endpoint] != 'null' and previous_report[endpoint] != report_row['status']:
+        if previous_report[endpoint] != 'null' and previous_report[endpoint] != report_row['status'] or report_row['status'] == 'unhealthy':
             alerts.append(report_row)
 
     # Get contact points for changed endpoints
-    if alerts:
+    if len(alerts) > 0:
         get_contact_route = '/endpoint/contact/get'
         endpoint_index = dict()
         for row in alerts:
@@ -76,7 +76,7 @@ def processReport(channel, method, properties, body):
             response.raise_for_status()
         except Exception as e:
             print("Error occured when adding retrieving contacts")
-            raise e
+            # raise e
 
         # response = {
         #     "endpoint": <>,
@@ -84,7 +84,7 @@ def processReport(channel, method, properties, body):
         # }
 
         notification = []
-        for contact_row in response['result']:
+        for contact_row in response.json()['result']:
             notification.append({'endpoint': contact_row['endpoint'], 'timestamp': endpoint_index[contact_row['endpoint']]['timestamp'], 'status': endpoint_index[contact_row['endpoint']]['status'], 'chat_id': contact_row['chat_id']})
 
         # Inform user 
@@ -104,7 +104,7 @@ def processReport(channel, method, properties, body):
             response.raise_for_status()
         except Exception as e:
             print("Error occured when adding new events")
-            raise e
+            # raise e
 
         # print(response.json())
 

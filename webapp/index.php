@@ -32,7 +32,7 @@ $bot_username = BOT_USERNAME;
     <div id="header" style="width:1200px;">
       <div id="logo">
         <br><br>
-        <center><h1 style="color:#6c7ae0">G4T7 Watchdog Application</h1>
+        <center><h1 style="color:#6c7ae0">G5T6 Watchdog Application</h1>
         <span style="font-size:20px">Where You Can Monitor With Ease</span>
         </center>
       </div>

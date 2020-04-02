@@ -61,8 +61,8 @@ CREATE TABLE `accountEndpoint` (
   `endpoint_url` varchar(120) NOT NULL,
   `chat_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `account_id` (`account_id`,`endpoint_url`,`chat_id`),
   KEY `endpoint_url` (`endpoint_url`),
+  KEY `account_id` (`account_id`),
   CONSTRAINT `accountEndpoint_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `accountEndpoint_ibfk_2` FOREIGN KEY (`endpoint_url`) REFERENCES `endpoint` (`endpoint_url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

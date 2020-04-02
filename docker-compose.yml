@@ -8,8 +8,8 @@ services:
         volumes: 
             - ./microservices/mysql/data:/var/lib/mysql
             - ./microservices/mysql/setup:/docker-entrypoint-initdb.d
-        expose: 
-            - "3306"
+        ports: 
+            - 3306:3306
         environment: 
             - MYSQL_ROOT_PASSWORD=password
 
@@ -121,6 +121,7 @@ services:
             - watchdog-net
         env_file: 
             - ./env/.env.prod
+        restart: 'on-failure'
         depends_on: 
             - rabbitmq
         
