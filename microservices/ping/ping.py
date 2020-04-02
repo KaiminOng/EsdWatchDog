@@ -58,7 +58,7 @@ async def main(urls):
             # Unable to connect to url
             except Exception as e:
                 # results.append(False)
-                print(type(e))
+                # print(type(e))
                 info["status"] = "unhealthy"
             
             #add timestamp

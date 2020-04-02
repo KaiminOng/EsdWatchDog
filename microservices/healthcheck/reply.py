@@ -34,8 +34,8 @@ def receiveReport():
     channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=queue_name)
 
     # Set up queue for sending messages to notification
-    # notify_queue = channel.queue_declare(queue='notifications', durable=True)
-    # channel.queue_bind(exchange=exchange_name, queue='notifications', routing_key='healthcheck.notify')
+    notify_queue = channel.queue_declare(queue='notifications', durable=True)
+    channel.queue_bind(exchange=exchange_name, queue='notifications', routing_key='healthcheck.notify')
 
     # Configure queue and begin event loop for consuming messages
     channel.basic_qos(prefetch_count=1)
@@ -49,7 +49,7 @@ def processReport(channel, method, properties, body):
 
     report = json.loads(body)['endpoints']
 
-    print(report)
+    # print(report)
 
     alerts = []
 
@@ -60,32 +60,40 @@ def processReport(channel, method, properties, body):
     for report_row in report:
         endpoint = report_row['endpoint']
         # Check if previous report was different from new report
-        if previous_report[endpoint] != report_row['status']:
+        if previous_report[endpoint] != 'null' and previous_report[endpoint] != report_row['status']:
             alerts.append(report_row)
 
     # Get contact points for changed endpoints
     if alerts:
         get_contact_route = '/endpoint/contact/get'
+        endpoint_index = dict()
+        for row in alerts:
+            endpoint_index[row['endpoint']] = row
         print("Retrieving contacts from database...")
-        response = r.get(f"{dh_uri}{get_contact_route}", json={'endpoint': [x['endpoint'] for x in alerts]})
+        response = r.get(f"{dh_uri}{get_contact_route}", json={'endpoint': list(endpoint_index.keys())})
 
         try:
             response.raise_for_status()
         except Exception as e:
             print("Error occured when adding retrieving contacts")
-            # raise e
+            raise e
 
-        print(response.json())
+        # response = {
+        #     "endpoint": <>,
+        #     "chat_id": []
+        # }
 
-    # Send request to notification endpoint
+        notification = []
+        for contact_row in response['result']:
+            notification.append({'endpoint': contact_row['endpoint'], 'timestamp': endpoint_index[contact_row['endpoint']]['timestamp'], 'status': endpoint_index[contact_row['endpoint']]['status'], 'chat_id': contact_row['chat_id']})
 
-    # {
-    #     "events" : [
-    #         {'endpoint': <>,
-    #         'status': <>,
-    #         'timestamp': <>}
-    #     ]
-    # }
+        # Inform user 
+        print("Sending alerts to notification service...")
+        channel.basic_publish(exchange=exchange_name, routing_key='healthcheck.notify', body=json.dumps({"events": notification}, default=str),
+                            properties=pika.BasicProperties(
+                                delivery_mode=2,
+                                content_type='application/json'
+                            ))
 
         # Add endpoint events
         add_event_route = '/endpoint/event/new'
@@ -96,7 +104,19 @@ def processReport(channel, method, properties, body):
             response.raise_for_status()
         except Exception as e:
             print("Error occured when adding new events")
-            # raise e
+            raise e
+
+        # print(response.json())
+
+    # Send request to notification endpoint
+
+    # {
+    #     "events" : [
+    #         {'endpoint': <>,
+    #         'status': <>,
+    #         'timestamp': <>}
+    #     ]
+    # }
 
     # print(report)
 
@@ -109,7 +129,7 @@ def processReport(channel, method, properties, body):
         response.raise_for_status()
     except Exception as e:
         print("Error occured when updating endpoint status")
-        # raise e
+        raise e
 
     print("Report processing complete!")
     channel.basic_ack(delivery_tag=method.delivery_tag)

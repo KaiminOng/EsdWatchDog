@@ -101,6 +101,7 @@ def register_endpoint():
         # Add and commit the changes
         db.session.commit()
     except Exception as e:
+        raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when registering an endpoint'}), 500)
 
     return make_response(jsonify({'status': 'success'}), 200)

@@ -52,6 +52,7 @@ def add_new_endpoint():
     try:
         response.raise_for_status()
     except Exception:
+        raise e
         return make_response(jsonify({'status': 'error', 'message': 'Error occured when adding new endpoint'}), 500)
 
     # Successful response

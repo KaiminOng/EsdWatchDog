@@ -8,9 +8,9 @@ import os
 from datetime import datetime
 
 # Set environment variables ; will be stored in .env file
-os.environ['BROKER_HOSTNAME'] = 'localhost'
-os.environ['BROKER_PORT'] = '5672'
-os.environ['DH_URI'] = 'http://esdwatchdog.com:5000'
+# os.environ['BROKER_HOSTNAME'] = 'localhost'
+# os.environ['BROKER_PORT'] = '5672'
+# os.environ['DH_URI'] = 'http://esdwatchdog.com:5000'
 
 
 # Extract values from environment variables
@@ -21,7 +21,7 @@ dh_uri = os.environ.get('DH_URI')
 
 # Initiate connection to message broker
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog'))
+    pika.ConnectionParameters(host=broker_hostname, port=broker_port, virtual_host='watchdog', heartbeat=0, credentials=pika.PlainCredentials('admin', 'password')))
 
 try:
     channel = connection.channel()
@@ -50,8 +50,12 @@ def processRequest(channel, method, properties, body):
 
     print("Received a request from healthcheck...")
 
-    request = json.loads(body)
-    return request
+    parsed_request = json.loads(body)
+
+    # Send message to telegram user
+    sendMessage(parsed_request)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+
 
 def telegram_bot_sendtext(chat_id, message):
     
@@ -81,10 +85,9 @@ def sendMessage(data):
         print(response)
 
 
+
 if __name__ == '__main__':
     receiveRequest()
-    data = processRequest()
-    sendMessage(data)
 
 
 # test = telegram_bot_sendtext("-393119922")
