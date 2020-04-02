@@ -87,7 +87,7 @@ services:
         networks: 
             - watchdog-net
         ports: 
-            - 80:8081
+            - 80:8000
 
     bot-tracker:
         build: ./microservices/bot-tracker
