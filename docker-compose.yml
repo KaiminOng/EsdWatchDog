@@ -172,7 +172,7 @@ services:
         env_file: 
             - "./env/.kong.env"
         ports:
-            - "5001:5001/tcp"
+            - "8000:8000/tcp"
         expose: 
             - "8001"
         healthcheck:
