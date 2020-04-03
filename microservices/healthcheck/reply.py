@@ -96,29 +96,15 @@ def processReport(channel, method, properties, body):
                             ))
 
         # Add endpoint events
-        add_event_route = '/endpoint/event/new'
-        print("Sending new events information...")
-        response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
+        # add_event_route = '/endpoint/event/new'
+        # print("Sending new events information...")
+        # response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
 
-        try:
-            response.raise_for_status()
-        except Exception as e:
-            print("Error occured when adding new events")
+        # try:
+        #     response.raise_for_status()
+        # except Exception as e:
+        #     print("Error occured when adding new events")
             # raise e
-
-        # print(response.json())
-
-    # Send request to notification endpoint
-
-    # {
-    #     "events" : [
-    #         {'endpoint': <>,
-    #         'status': <>,
-    #         'timestamp': <>}
-    #     ]
-    # }
-
-    # print(report)
 
     # Update endpoint status
     update_status_route = '/endpoint/status'
