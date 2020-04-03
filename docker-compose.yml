@@ -172,6 +172,7 @@ services:
         env_file: 
             - "./env/.kong.env"
         ports:
+            - "8443:8443/tcp"
             - "8000:8000/tcp"
         expose: 
             - "8001"
