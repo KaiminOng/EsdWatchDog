@@ -258,8 +258,9 @@ Released   : 20130902
 				} catch (error) {
 					// Errors when calling the service; such as network error, 
 					// service offline, etc
+					console.log(error)
 					var message = "Error connecting to the service, please try again later.";
-					window.location.replace("homepage.php?status=error&message=" + message);
+					// window.location.replace("homepage.php?status=error&message=" + message);
 
 				} // error
 
