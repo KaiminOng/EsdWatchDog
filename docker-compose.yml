@@ -97,6 +97,7 @@ services:
 
     bot-tracker:
         build: ./microservices/bot-tracker
+        hostname: webhook
         restart: 'on-failure'
         depends_on: 
             - datahandler
