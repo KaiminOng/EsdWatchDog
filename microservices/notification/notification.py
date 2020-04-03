@@ -86,7 +86,7 @@ def sendMessage(data):
 
         for chat in chat_ids:
             response = telegram_bot_sendtext(chat, message)
-        print(response)
+            print(response)
 
 
 
