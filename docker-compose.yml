@@ -97,14 +97,13 @@ services:
 
     bot-tracker:
         build: ./microservices/bot-tracker
-        hostname: webhook
         restart: 'on-failure'
         depends_on: 
             - datahandler
         networks: 
             - watchdog-net
-        expose: 
-            - "8000"
+        ports: 
+            - 8443:8443
         env_file: 
             ./env/.env.prod
 
@@ -173,7 +172,6 @@ services:
         env_file: 
             - "./env/.kong.env"
         ports:
-            - "8443:8443/tcp"
             - "8000:8000/tcp"
         expose: 
             - "8001"
