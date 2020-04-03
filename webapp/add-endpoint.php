@@ -90,7 +90,7 @@ Released   : 20130902
 				</div>
 				<p>Note: If you wish to monitor the new website in a <strong>chat group, </strong></p>
 				<p>
-					Do remember to first <strong>add the bot</strong> into the chat group!
+					Do remember to first add our bot<strong>@ESD_Telegram_Proj</strong> into the chat group!
 				</p>
 				<p>*Selection of <strong>multiple chats</strong> is possible</p>
 				<p id="main-container"></p>
@@ -117,7 +117,7 @@ Released   : 20130902
 													<td class='cell100 t2column1'><input name='endpoint' type='text' id='endpoint' placeholder='Input Website URL'></td>
 												</tr>
 												<tr>
-													<th class="cell100 t2column1" style="width:12em">Available Chat Group</th>
+													<th class="cell100 t2column1" style="width:12em">Available Chat Groups</th>
 												</tr>
 
 											</tbody>
