@@ -19,7 +19,7 @@ try:
     channel = connection.channel()
 except Exception as e:
     print("An error occured when establishing connection to message broker")
-    raise e
+    # raise e
 
 # Set up exchange name if doesn't exist
 exchange_name = "healthcheck_direct"
@@ -49,9 +49,9 @@ def processReport(channel, method, properties, body):
 
     report = json.loads(body)['endpoints']
 
-    # print(report)
-
     alerts = []
+
+    events = []
 
     # Load previous report and cross check
     with open('./current_status.txt', 'r') as json_file:
@@ -60,7 +60,10 @@ def processReport(channel, method, properties, body):
     for report_row in report:
         endpoint = report_row['endpoint']
         # Check if previous report was different from new report
-        if previous_report[endpoint] != 'null' and previous_report[endpoint] != report_row['status'] or report_row['status'] == 'unhealthy':
+        if previous_report[endpoint] != 'null' and previous_report[endpoint] != report_row['status']:
+            alerts.append(report_row)
+            events.append(report_row)
+        elif report_row['status'] == 'unhealthy':
             alerts.append(report_row)
 
     # Get contact points for changed endpoints
@@ -78,11 +81,6 @@ def processReport(channel, method, properties, body):
             print("Error occured when adding retrieving contacts")
             # raise e
 
-        # response = {
-        #     "endpoint": <>,
-        #     "chat_id": []
-        # }
-
         notification = []
         for contact_row in response.json()['result']:
             notification.append({'endpoint': contact_row['endpoint'], 'timestamp': endpoint_index[contact_row['endpoint']]['timestamp'], 'status': endpoint_index[contact_row['endpoint']]['status'], 'chat_id': contact_row['chat_id']})
@@ -95,16 +93,18 @@ def processReport(channel, method, properties, body):
                                 content_type='application/json'
                             ))
 
-        # Add endpoint events
-        # add_event_route = '/endpoint/event/new'
-        # print("Sending new events information...")
-        # response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
+    # Add endpoint events
+    if len(events) > 0:
+        add_event_route = '/endpoint/event/new'
+        print("Sending new events information...")
+        response = r.post(f"{dh_uri}{add_event_route}", json={'events': alerts})
 
-        # try:
-        #     response.raise_for_status()
-        # except Exception as e:
-        #     print("Error occured when adding new events")
-            # raise e
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            print("Error occured when adding new events")
+            raise e
+
 
     # Update endpoint status
     update_status_route = '/endpoint/status'
