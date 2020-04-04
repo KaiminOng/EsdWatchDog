@@ -173,6 +173,7 @@ services:
             - "./env/.kong.env"
         ports:
             - "8000:8000/tcp"
+            - "8443:8443/tcp"
         expose: 
             - "8001"
         healthcheck:
