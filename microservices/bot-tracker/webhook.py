@@ -65,4 +65,4 @@ def listener():
 
 if __name__ == '__main__':
     print("Bot-tracker is running...")
-    app.run(ssl_context=('public.pem', 'private.key'), host='0.0.0.0', port='8443')
+    app.run(ssl_context=('PUBLIC.pem', 'PRIVATE.key'), host='0.0.0.0', port='8443')
