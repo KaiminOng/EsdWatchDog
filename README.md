@@ -85,3 +85,4 @@ After setting setting up the containers, we need to configure the Kong API gatew
 | /watchlist/new | POST, OPTIONS | HTTP
 | /contact/get | GET | HTTP
 | /watchlist/get | GET | HTTP
+
