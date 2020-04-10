@@ -1,5 +1,8 @@
 <?php
-define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
+
+include "config.php";
+
+define('BOT_USERNAME', $bot_username); // place username of your bot here
 
 if (isset($_COOKIE['tg_user'])) {
 	$user_info = json_decode($_COOKIE['tg_user'], true);
@@ -7,7 +10,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$first_name = $user_info['first_name'];
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
-$hostname = "http://esdwatchdog.me:5001";
+// $hostname = "http://esdwatchdog.me:5001";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -151,12 +154,7 @@ Released   : 20130902
 			$.each($("input[name='chats']:checked"), function(){
 				chats_selected.push($(this).val());
 			});
-			// for (i = 0; i < length; i++) {
-			// 	var checkedVal = document.addEndpoint.chats[i].checked;
-			// 	if (checkedVal) {
-			// 		chats_selected.push(document.addEndpoint.chats[i].value);
-			// 	}
-			// }
+
 			return chats_selected;
 		}
 
@@ -187,13 +185,7 @@ Released   : 20130902
 					// for loop to setup all table rows with obtained contacts data
 					var row = "<tr class='row100 body'>" +
 							"<td class='cell100 t2column2' style='text-align:left'>";
-					// "<select id='chats' name='chats[]' style='width:20em' multiple size='1'>";
 
-					// for (const c of contacts) {
-					// 	row += "<option value='" + c.chat_id + "'>" + c.chat_title + "</option>";
-					// }
-
-					// row += "</select></td>" +
 					for (const c of contacts) {
 						row += "<label class='checkboxcontainer'>" + c.chat_title + "<input type='checkbox' name='chats' value='" + c.chat_id + "'><span class='checkmark'></span></label>";
 						
@@ -227,8 +219,6 @@ Released   : 20130902
 
 				// Change serviceURL to your own
 				var serviceURL = hostname_get + "/watchlist/new";
-				// var serviceURL = "http://esdwatchdog.com:5000/endpoint/new";
-
 
 				try {
 					const response =

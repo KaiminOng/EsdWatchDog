@@ -1,5 +1,7 @@
 <?php
-define('BOT_USERNAME', '@ESD_Proj_bot'); // place username of your bot here
+include "config.php";
+
+define('BOT_USERNAME', $bot_username); // place username of your bot here
 
 if (isset($_COOKIE['tg_user'])) {
 	$user_info = json_decode($_COOKIE['tg_user'], true);
@@ -8,7 +10,7 @@ if (isset($_COOKIE['tg_user'])) {
 	$photo_url = isset($user_info['photo_url']) ? $user_info['photo_url'] : false;
 }
 
-$hostname = "http://esdwatchdog.me:5001";
+// $hostname = "http://esdwatchdog.me:5001";
 
 ?>
 
@@ -232,15 +234,14 @@ Released   : 20130902
 								// "<input type='hidden' name='contacts[]' value=" + r.contacts + ">" +
 								"<button id='updateBtn' type='submit' class='btn btn-primary' style='font-size:10px; margin=2px;'>Update</button>" +
 
-								"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;' data-dest='delete.php?endpoint=" + r.endpoint + "'>Delete</button></td></tr>";
+								"<button id='deleteBtn' class='btn btn-danger' style='font-size:10px;'>Delete</button></td></tr>";
 							
 							rows += eachRow;
 							index += 1;
 						}
 						// add all the rows to the table
 						$('#displaytable tbody').html(rows);
-						// '<%session_start(); %>';
-						// '<%Session["endpoint_contacts"] = "' + dict + '"; %>';
+
 					}
 				} catch (error) {
 					// Errors when calling the service; such as network error, 
@@ -259,67 +260,6 @@ Released   : 20130902
 
 		send_request();
 
-
-
-		// function updateURL(endpoint){
-		// 	"<%Session['endpoint'] = " + endpoint + "; %>";
-		// 	window.location.replace("update.php");
-		// }
-
-		// $('#updateBtn').click(async (event) => {
-
-		// 	location.href = "update.php"
-		// 	var userid = '<?php echo $user_id; ?>';
-
-		// 	var endpoint = $('#endpoint').val();
-		// 	// GET SELECTED CHAT GROUP'S CHAT ID
-		// 	// var chatgroup = $('#chatgroup').val(); ???
-
-		// 	// Change serviceURL to your own
-		// 	var serviceURL = "http://esdwatchdog:5000/endpoint/edit";
-
-		// 	try {
-		// 		const response =
-		// 			await fetch(
-		// 				serviceURL, {
-		// 					method: 'POST',
-		// 					headers: {
-		// 						"Content-Type": "application/json"
-		// 					},
-		// 					body: JSON.stringify({
-		// 						userID: userid,
-		// 						endpoint: endpoint,
-		// 						chatID: chatid
-		// 					})
-		// 				});
-
-		// 		const data = await response.json();
-		// 		// console.log(data);
-		// 		if (data[1] === 400) {
-		// 			document.getElementById("message").innerHTML = data[0].message
-		// 		} else if (data[1] === 201) {
-		// 			document.getElementById("message").innerHTML = title + " has been succesfully added."
-		// 		}
-
-		// 	} catch (error) {
-		// 		// Errors when calling the service; such as network error, 
-		// 		// service offline, etc
-		// 		showError
-		// 			('There is a problem editing the endpoint, please try again later.<br />' + error);
-
-		// 	} // error
-		// });
-
-		$('#deleteBtn').click(function() {
-			var resp = confirm('Are you sure you want to stop monitoring this website?');
-			if (resp == true) {
-				// delete url if press ok
-				var dest = $('#deleteBtn').data('dest');
-				$("#deleteBtn").attr("href", dest);
-			} else {
-				return false;
-			}
-		});
 	</script>
 </body>
 

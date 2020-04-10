@@ -1,12 +1,13 @@
 <?php
+include "../config.php";
 
-header('Access-Control-Allow-Origin: http://esdwatchdog.com/');
-header('Access-Control-Allow-Credentials: true');
+// header('Access-Control-Allow-Origin: http://esdwatchdog.com/');
+// header('Access-Control-Allow-Credentials: true');
 
 
-define('BOT_TOKEN', '1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w'); // place bot token of your bot here
+define('BOT_TOKEN', $bot_token); // place bot token of your bot here
 
-function checkTelegramAuthorization($auth_data) {
+function checkTelegramAuthorization($auth_data, $domain_name) {
   $check_hash = $auth_data['hash'];
   unset($auth_data['hash']);
   $data_check_arr = [];
@@ -26,16 +27,15 @@ function checkTelegramAuthorization($auth_data) {
   return $auth_data;
 }
 
-function saveTelegramUserData($auth_data) {
+function saveTelegramUserData($auth_data, $domain_name) {
   $auth_data_json = json_encode($auth_data);
-  setcookie('tg_user', $auth_data_json, time() + 3600, '/', 'esdwatchdog.me');
-  // $_SESSION['tg_user'] = $auth_data_json;
+  setcookie('tg_user', $auth_data_json, time() + 3600, '/', $domain_name);
 }
 
 
 try {
-  $auth_data = checkTelegramAuthorization($_GET);
-  saveTelegramUserData($auth_data);
+  $auth_data = checkTelegramAuthorization($_GET, $domain_name);
+  saveTelegramUserData($auth_data, $domain_name);
 } catch (Exception $e) {
   die ($e->getMessage());
 }

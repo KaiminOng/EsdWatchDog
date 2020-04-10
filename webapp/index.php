@@ -1,11 +1,13 @@
 <?php
+
+include "config.php";
 // header('Access-Control-Allow-Origin: http://esdwatchdog.com/');
 // header('Access-Control-Allow-Credentials: true');
 // session_start();
 
-define('BOT_USERNAME', 'ESD_Proj_bot'); // place username of your bot here
+define('BOT_USERNAME', $bot_username); // place username of your bot here
 
-$bot_username = BOT_USERNAME;
+// $bot_username = BOT_USERNAME;
 
 
 ?>
