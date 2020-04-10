@@ -4,10 +4,6 @@ import json
 import pika
 import os
 
-# Set environment variables ; will be stored in .env file
-# os.environ['BROKER_HOSTNAME'] = 'rabbitmq'
-# os.environ['BROKER_PORT'] = '5672'
-# os.environ['DH_URI'] = 'http://datahandler:5000'
 
 # Extract values from environment variables
 broker_hostname = os.environ.get('BROKER_HOSTNAME')

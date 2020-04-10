@@ -4,7 +4,9 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/1129690128:AAFzGAL-Rur8QAZyjG2_62f5tvQvOKjv29w', methods=['GET', 'POST'])
+webhook_route = os.environ.get('WEBHOOK_ROUTE', '/')
+
+@app.route(webhook_route, methods=['GET', 'POST'])
 def listener():
 
     # Check if incoming request is json
@@ -63,4 +65,4 @@ def listener():
 
 if __name__ == '__main__':
     print("Bot-tracker is running...")
-    app.run(host='0.0.0.0', port='8443')
+    app.run(ssl_context=('public.pem', 'private.key'), host='0.0.0.0', port='8443')

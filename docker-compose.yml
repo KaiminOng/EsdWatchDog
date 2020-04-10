@@ -102,8 +102,8 @@ services:
             - datahandler
         networks: 
             - watchdog-net
-        expose:
-            - "8443" 
+        ports: :
+            - 8443:8443 
         env_file: 
             ./env/.env.prod
 
@@ -173,7 +173,6 @@ services:
             - "./env/.kong.env"
         ports:
             - "8000:8000/tcp"
-            - "8443:8443/tcp"
         expose: 
             - "8001"
         healthcheck:
