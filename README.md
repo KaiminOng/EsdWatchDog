@@ -16,7 +16,7 @@
 
 > *NOTE: You should provide a fully qualified domain name (FQDN). If not, refer to the following instructions to create your own Virtual Host with WAMP*
 
-### To Create Your Own Virtual Host with WAMP
+### Create Your Own Virtual Host with WAMP
 For this example, we will be using the **WAMP** stack for creating virtual hosts. However, you can use your preferred Nginx or  your preferred Apache stack.
 
 1. Turn on WAMP
@@ -52,7 +52,7 @@ The build process will take anywhere from 5 to 10 minutes depending on your inte
 
 To check the state of your containers. If there some containers which are unhealthy, they could be raising errors since prerequisite services (RabbitMQ, SQL)may not be running yet. 
 
-However, if the container still refuses to boot, you can run 
+However, if the containers still refuse to boot, you can run
 
 ```
 docker-compose logs -f               --- View collective logs
